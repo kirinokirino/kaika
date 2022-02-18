@@ -1,0 +1,25 @@
+[package]
+name = "kaika"
+version = "0.1.0"
+authors = ["kirinokirino <kirinokirino@lunariko.com>"]
+edition = "2021"
+description = "Brakeys 2022.1 game jam entry."
+repository = "https://github.com/kirinokirino"
+documentation = ""
+homepage = ""
+readme = "README.md"
+license = "MY"
+keywords = ["game"]
+categories = ["games"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+macroquad = { version = "0.3.13", default-features = false } #, features = ["audio", "log-rs"] }
+
+[profile.dev]
+debug = 1
+
+[profile.dev.package."*"]
+opt-level=3
