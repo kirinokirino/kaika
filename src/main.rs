@@ -1,4 +1,3 @@
-
 use macroquad::prelude::*;
 
 fn window_conf() -> Conf {
@@ -12,7 +11,7 @@ fn window_conf() -> Conf {
 #[macroquad::main(window_conf)]
 async fn main() {
     loop {
-        clear_background(WHITE);
+        clear_background(GRAY);
         next_frame().await
     }
 }
