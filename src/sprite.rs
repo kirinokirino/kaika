@@ -6,7 +6,7 @@ use macroquad::texture::{draw_texture, load_texture, Texture2D};
 use macroquad::ui;
 use macroquad::{color::Color, color_u8};
 
-const SPRITE_PATHS: &str = include_str!("sprites.txt");
+use crate::SPRITE_PATHS;
 
 pub struct Sprites {
     sprites: HashMap<&'static str, Sprite>,

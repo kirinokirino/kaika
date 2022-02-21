@@ -43,6 +43,9 @@ mod sprite;
 mod static_layers;
 mod world;
 
+pub const SPRITE_PATHS: &str = include_str!("../data/sprites.txt");
+pub const SOUND_PATHS: &str = include_str!("../data/sounds.txt");
+
 fn window_conf() -> Conf {
     Conf {
         window_title: "game".to_owned(),

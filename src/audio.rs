@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use macroquad::audio::Sound;
 use macroquad::ui;
 
-const SOUND_PATHS: &str = include_str!("sounds.txt");
+use crate::SOUND_PATHS;
 
 pub struct Audio {
     samples: HashMap<&'static str, Sample>,
