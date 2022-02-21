@@ -37,6 +37,7 @@ use macroquad::prelude::*;
 
 mod audio;
 mod camera;
+mod collider;
 mod common;
 mod world;
 
@@ -62,7 +63,7 @@ async fn main() {
         world.update();
         world.draw();
 
-        audio.debug();
+        //audio.debug();
 
         next_frame().await;
     }
