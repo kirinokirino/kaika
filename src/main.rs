@@ -59,8 +59,8 @@ async fn main() {
     set_pc_assets_folder("assets");
 
     let audio = audio::Audio::new().await;
-    let mut sprites = sprite::Sprites::new().await;
-    let mut world = world::World::new();
+    let sprites = sprite::Sprites::new().await;
+    let mut world = world::World::new(audio, sprites);
 
     loop {
         clear_background(GRAY);
@@ -69,8 +69,7 @@ async fn main() {
         world.update();
         world.draw();
 
-        //audio.debug();
-        sprites.debug();
+        world.debug();
 
         next_frame().await;
     }

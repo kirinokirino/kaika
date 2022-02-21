@@ -1,15 +1,23 @@
 use macroquad::prelude::*;
 
+use crate::audio::Audio;
 use crate::camera::{top_down_camera_controls, Camera};
+use crate::sprite::Sprites;
 
 pub struct World {
+    sprites: Sprites,
+    audio: Audio,
+
     time: Time,
     main_camera: Camera,
 }
 
 impl World {
-    pub fn new() -> Self {
+    pub fn new(audio: Audio, sprites: Sprites) -> Self {
         Self {
+            audio,
+            sprites,
+
             time: Time::default(),
             main_camera: Camera::new(),
         }
@@ -123,11 +131,10 @@ impl World {
 
         set_default_camera();
     }
-}
 
-impl Default for World {
-    fn default() -> Self {
-        Self::new()
+    pub fn debug(&mut self) {
+        self.audio.debug();
+        self.sprites.debug();
     }
 }
 
