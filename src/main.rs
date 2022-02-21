@@ -62,6 +62,8 @@ async fn main() {
     let sprites = sprite::Sprites::new().await;
     let mut world = world::World::new(audio, sprites);
 
+    world.setup();
+
     loop {
         clear_background(GRAY);
 

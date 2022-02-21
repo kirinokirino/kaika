@@ -2,11 +2,15 @@ use macroquad::prelude::*;
 
 use crate::audio::Audio;
 use crate::camera::{top_down_camera_controls, Camera};
+use crate::collider::Collider;
 use crate::sprite::Sprites;
+use crate::static_layers::{StaticEntity, StaticLayers};
 
 pub struct World {
     sprites: Sprites,
     audio: Audio,
+
+    static_layers: StaticLayers,
 
     time: Time,
     main_camera: Camera,
@@ -18,10 +22,27 @@ impl World {
             audio,
             sprites,
 
+            static_layers: StaticLayers::new(),
+
             time: Time::default(),
             main_camera: Camera::new(),
         }
     }
+
+    pub fn setup(&mut self) {
+        self.add_static_entity();
+    }
+
+    pub fn add_static_entity(&mut self) {
+        let sprite = self
+            .sprites
+            .get_sprite_name_by_id(0)
+            .expect("no sprite with id 0");
+        let collider = Collider::new(Vec2::new(0.0, 0.0), 100.0, 100.0);
+        let entity = StaticEntity::new(sprite, collider);
+        self.static_layers.add_entity(0, entity)
+    }
+
     pub fn input(&mut self) {
         let lmb = is_mouse_button_pressed(MouseButton::Left);
         let W = is_key_down(KeyCode::W) || is_key_down(KeyCode::Comma);
@@ -128,6 +149,8 @@ impl World {
         );
 
         draw_rectangle(-5.0, -5.0, 10.0, 10.0, color_u8!(180, 180, 180, 255));
+
+        self.static_layers.draw(&self.sprites);
 
         set_default_camera();
     }
