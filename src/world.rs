@@ -20,33 +20,56 @@ impl World {
         let S = is_key_down(KeyCode::S) || is_key_down(KeyCode::O);
         let A = is_key_down(KeyCode::A);
         let D = is_key_down(KeyCode::D) || is_key_down(KeyCode::E);
-        if lmb {
+
+        let mut line = 1u8;
+        let font_size = 24.0;
+        let line_height = font_size + 0.0;
+        let padding = 10.0;
+        let color = color_u8!(0, 0, 0, 255);
+
+        let camera_info = true;
+        let mouse_info = true;
+        let key_info = true;
+
+        if camera_info {
             let camera = self.main_camera;
-            debug!(
-                "{}",
-                format!(
+            draw_text(
+                &format!(
                     "target: {}, zoom: {:?}, view_port: {:?}",
                     camera.target,
                     camera.zoom,
                     camera.viewport_size(),
-                )
+                ),
+                padding,
+                padding + f32::from(line) * line_height,
+                font_size,
+                color,
             );
-            let mouse = camera.mouse_world_position();
-            debug!("mouse: {:?}, mouse_world: {}", mouse_position(), mouse,);
+            line += 1;
         }
 
-        let mut line = 0u8;
-        let key_debug = false;
-        if key_debug {
+        if mouse_info {
+            let mouse = self.main_camera.mouse_world_position();
+            draw_text(
+                &format!("mouse: {:?}, mouse_world: {}", mouse_position(), mouse),
+                padding,
+                padding + f32::from(line) * line_height,
+                font_size,
+                color,
+            );
+            line += 1;
+        }
+
+        if key_info {
             for key_code in (0..1000).map(From::from) {
                 if is_key_down(key_code) {
                     let text = format!("{:?}", key_code);
                     draw_text(
                         &text,
-                        10.0,
-                        20.0f32.mul_add(f32::from(line), 10.0),
-                        18.0,
-                        color_u8!(0.0, 0.0, 0.0, 255.0),
+                        padding,
+                        padding + f32::from(line) * line_height,
+                        font_size,
+                        color,
                     );
                     line += 1;
                 }
@@ -60,6 +83,7 @@ impl World {
 
     pub fn update(&mut self) {
         self.update_time(get_time());
+        let delta = self.time.delta;
         self.main_camera.update();
     }
 
@@ -96,6 +120,8 @@ impl World {
         );
 
         draw_rectangle(-5.0, -5.0, 10.0, 10.0, color_u8!(180, 180, 180, 255));
+
+        set_default_camera();
     }
 }
 
