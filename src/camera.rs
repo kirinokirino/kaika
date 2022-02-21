@@ -107,50 +107,51 @@ impl Default for Camera {
     }
 }
 
+#[allow(clippy::many_single_char_names)]
 pub fn top_down_camera_controls(camera: &mut Camera) {
-    let W = is_key_down(KeyCode::W) || is_key_down(KeyCode::Comma);
-    let S = is_key_down(KeyCode::S) || is_key_down(KeyCode::O);
-    let A = is_key_down(KeyCode::A);
+    let w = is_key_down(KeyCode::W) || is_key_down(KeyCode::Comma);
+    let s = is_key_down(KeyCode::S) || is_key_down(KeyCode::O);
+    let a = is_key_down(KeyCode::A);
 
     #[cfg(not(target_arch = "wasm32"))]
-    let D = is_key_down(KeyCode::E);
+    let d = is_key_down(KeyCode::E);
     #[cfg(not(target_arch = "wasm32"))]
-    let E = is_key_down(KeyCode::Period);
+    let e = is_key_down(KeyCode::Period);
 
     #[cfg(target_arch = "wasm32")]
-    let D = is_key_down(KeyCode::D);
+    let d = is_key_down(KeyCode::D);
     #[cfg(target_arch = "wasm32")]
-    let E = is_key_down(KeyCode::E);
+    let e = is_key_down(KeyCode::E);
 
-    let Q = is_key_down(KeyCode::Q) || is_key_down(KeyCode::Apostrophe);
+    let q = is_key_down(KeyCode::Q) || is_key_down(KeyCode::Apostrophe);
     // scroll
-    if W {
+    if w {
         // && is_key_pressed(KeyCode::LeftControl) {
         camera.target.y -= 0.01 / camera.zoom.x;
         camera.unfollow();
     }
-    if S {
+    if s {
         // && is_key_pressed(KeyCode::LeftControl) {
         camera.target.y += 0.01 / camera.zoom.x;
         camera.unfollow();
     }
-    if A {
+    if a {
         // && is_key_pressed(KeyCode::LeftControl) {
         camera.target.x -= 0.01 / camera.zoom.x;
         camera.unfollow();
     }
-    if D {
+    if d {
         // && is_key_pressed(KeyCode::LeftControl) {
         camera.target.x += 0.01 / camera.zoom.x;
         camera.unfollow();
     }
     // zoom
-    if is_key_down(KeyCode::PageUp) || Q {
+    if is_key_down(KeyCode::PageUp) || q {
         camera.zoom.x *= 0.98;
         camera.zoom.y *= 0.98;
         camera.unfollow();
     }
-    if is_key_down(KeyCode::PageDown) || E {
+    if is_key_down(KeyCode::PageDown) || e {
         camera.zoom.x /= 0.98;
         camera.zoom.y /= 0.98;
         camera.unfollow();

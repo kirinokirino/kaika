@@ -17,11 +17,11 @@ impl Audio {
             let name = path
                 .split('/')
                 .last()
-                .unwrap()
+                .expect("Path should be in a samples/ folder, thus have a '/'")
                 .split('.')
                 .take(1)
                 .last()
-                .unwrap();
+                .expect("Path should include .ogg extension");
             let sample = Sample::new(path).await;
             samples.insert(name, sample);
         }
@@ -45,7 +45,9 @@ struct Sample {
 
 impl Sample {
     pub async fn new(path: &'static str) -> Self {
-        let sound = macroquad::audio::load_sound(path).await.unwrap();
+        let sound = macroquad::audio::load_sound(path)
+            .await
+            .expect("Sound file loading error");
         Self { path, sound }
     }
 }

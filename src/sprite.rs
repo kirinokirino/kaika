@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-use macroquad::logging::error;
 use macroquad::math::Vec2;
 use macroquad::texture::{draw_texture, load_texture, Texture2D};
 use macroquad::ui;
@@ -22,11 +21,11 @@ impl Sprites {
             let name = path
                 .split('/')
                 .last()
-                .unwrap()
+                .expect("Path should have sprites/ folder, thus have '/' char")
                 .split('.')
                 .take(1)
                 .last()
-                .unwrap();
+                .expect("Path should include the .png extension");
             let sprite = Sprite::new(path).await;
             sprites.insert(name, sprite);
         }
@@ -43,7 +42,7 @@ impl Sprites {
                 return Some(*name);
             }
         }
-        error!("ERROR: No sprite with id {} found", id);
+        eprintln!("ERROR: No sprite with id {} found", id);
         None
     }
 
@@ -51,7 +50,7 @@ impl Sprites {
         if let Some(sprite) = self.sprites.get(sprite) {
             sprite.draw(pos);
         } else {
-            error!("ERROR: Tried to draw a non-existing sprite: {}", sprite);
+            eprintln!("ERROR: Tried to draw a non-existing sprite: {}", sprite);
         }
     }
 
@@ -75,7 +74,7 @@ pub struct Sprite {
 
 impl Sprite {
     pub async fn new(path: &'static str) -> Self {
-        let texture = load_texture(path).await.unwrap();
+        let texture = load_texture(path).await.expect("Failed to load texture");
         Self { path, texture }
     }
 

@@ -40,15 +40,15 @@ impl World {
             .expect("no sprite with id 0");
         let collider = Collider::new(Vec2::new(0.0, 0.0), 100.0, 100.0);
         let entity = StaticEntity::new(sprite, collider);
-        self.static_layers.add_entity(0, entity)
+        self.static_layers.add_entity(0, entity);
     }
 
     pub fn input(&mut self) {
-        let lmb = is_mouse_button_pressed(MouseButton::Left);
-        let W = is_key_down(KeyCode::W) || is_key_down(KeyCode::Comma);
-        let S = is_key_down(KeyCode::S) || is_key_down(KeyCode::O);
-        let A = is_key_down(KeyCode::A);
-        let D = is_key_down(KeyCode::D) || is_key_down(KeyCode::E);
+        let _lmb = is_mouse_button_pressed(MouseButton::Left);
+        let _w = is_key_down(KeyCode::W) || is_key_down(KeyCode::Comma);
+        let _s = is_key_down(KeyCode::S) || is_key_down(KeyCode::O);
+        let _a = is_key_down(KeyCode::A);
+        let _d = is_key_down(KeyCode::D) || is_key_down(KeyCode::E);
 
         let mut line = 1u8;
         let font_size = 24.0;
@@ -70,7 +70,7 @@ impl World {
                     camera.viewport_size(),
                 ),
                 padding,
-                padding + f32::from(line) * line_height,
+                f32::from(line).mul_add(line_height, padding),
                 font_size,
                 color,
             );
@@ -82,7 +82,7 @@ impl World {
             draw_text(
                 &format!("mouse: {:?}, mouse_world: {}", mouse_position(), mouse),
                 padding,
-                padding + f32::from(line) * line_height,
+                f32::from(line).mul_add(line_height, padding),
                 font_size,
                 color,
             );
@@ -96,7 +96,7 @@ impl World {
                     draw_text(
                         &text,
                         padding,
-                        padding + f32::from(line) * line_height,
+                        f32::from(line).mul_add(line_height, padding),
                         font_size,
                         color,
                     );

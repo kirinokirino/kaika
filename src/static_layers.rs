@@ -2,8 +2,6 @@
 /// sprite
 use std::collections::{HashMap, HashSet};
 
-use macroquad::logging::info;
-
 use crate::collider::Collider;
 use crate::sprite::Sprites;
 
@@ -24,7 +22,7 @@ impl StaticLayers {
     pub fn add_entity(&mut self, z_index: i32, entity: StaticEntity) {
         let is_new_layer = self.used_layers.insert(z_index);
         if is_new_layer {
-            info!("Creating a new z_index layer {}", z_index);
+            println!("Creating a new z_index layer {}", z_index);
             let new_layer: Vec<StaticEntity> = vec![entity];
             self.layer.insert(z_index, new_layer);
         } else {
@@ -54,12 +52,13 @@ pub struct StaticEntity {
 }
 
 impl StaticEntity {
-    pub fn new(sprite: &'static str, collider: Collider) -> Self {
+    #[must_use]
+    pub const fn new(sprite: &'static str, collider: Collider) -> Self {
         Self { collider, sprite }
     }
 
     pub fn debug(&self, sprites: &Sprites) {
         self.collider.draw();
-        sprites.draw(&self.sprite, self.collider.pos);
+        sprites.draw(self.sprite, self.collider.pos);
     }
 }

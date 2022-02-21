@@ -31,7 +31,12 @@
     clippy::as_conversions,
     clippy::verbose_file_reads
 )]
-#![allow(clippy::cast_precision_loss, clippy::missing_panics_doc)]
+#![allow(
+    clippy::cast_precision_loss,
+    clippy::missing_panics_doc,
+    clippy::option_if_let_else,
+    clippy::pattern_type_mismatch
+)]
 
 use macroquad::prelude::*;
 
