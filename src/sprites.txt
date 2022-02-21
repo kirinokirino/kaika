@@ -1,0 +1,4 @@
+sprites/platform1.png
+sprites/char1-idle.png
+sprites/char1-jump.png
+sprites/char1-fall.png

@@ -39,6 +39,7 @@ mod audio;
 mod camera;
 mod collider;
 mod common;
+mod sprite;
 mod world;
 
 fn window_conf() -> Conf {
@@ -54,6 +55,7 @@ async fn main() {
     set_pc_assets_folder("assets");
 
     let audio = audio::Audio::new().await;
+    let mut sprites = sprite::Sprites::new().await;
     let mut world = world::World::new();
 
     loop {
@@ -64,6 +66,7 @@ async fn main() {
         world.draw();
 
         //audio.debug();
+        sprites.debug();
 
         next_frame().await;
     }
