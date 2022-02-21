@@ -1,6 +1,7 @@
-/// name (from the path)
 use std::collections::HashMap;
 
+use macroquad::logging::error;
+use macroquad::math::Vec2;
 use macroquad::texture::{draw_texture, load_texture, Texture2D};
 use macroquad::ui;
 use macroquad::{color::Color, color_u8};
@@ -29,9 +30,28 @@ impl Sprites {
             let sprite = Sprite::new(path).await;
             sprites.insert(name, sprite);
         }
+
         Self {
             sprites,
             debug: None,
+        }
+    }
+
+    pub fn get_sprite_name_by_id(&self, id: usize) -> Option<&'static str> {
+        for (i, name) in self.sprites.keys().enumerate() {
+            if id == i {
+                return Some(*name);
+            }
+        }
+        error!("ERROR: No sprite with id {} found", id);
+        None
+    }
+
+    pub fn draw(&self, sprite: &str, pos: Vec2) {
+        if let Some(sprite) = self.sprites.get(sprite) {
+            sprite.draw(pos);
+        } else {
+            error!("ERROR: Tried to draw a non-existing sprite: {}", sprite);
         }
     }
 
@@ -42,13 +62,13 @@ impl Sprites {
             }
         }
         if let Some(sprite) = &self.debug {
-            sprite.draw(0.0, 0.0);
+            sprite.draw(Vec2::new(0.0, 0.0));
         };
     }
 }
 
 #[derive(Debug, Clone)]
-struct Sprite {
+pub struct Sprite {
     path: &'static str,
     texture: Texture2D,
 }
@@ -59,7 +79,7 @@ impl Sprite {
         Self { path, texture }
     }
 
-    pub fn draw(&self, x: f32, y: f32) {
-        draw_texture(self.texture, x, y, color_u8!(255, 255, 255, 255));
+    pub fn draw(&self, pos: Vec2) {
+        draw_texture(self.texture, pos.x, pos.y, color_u8!(255, 255, 255, 255));
     }
 }

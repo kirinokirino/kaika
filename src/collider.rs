@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 
-struct Collider {
-    pos: Vec2,
+pub struct Collider {
+    pub pos: Vec2,
     width: f32,
     height: f32,
 }

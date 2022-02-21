@@ -40,6 +40,7 @@ mod camera;
 mod collider;
 mod common;
 mod sprite;
+mod static_layers;
 mod world;
 
 fn window_conf() -> Conf {
