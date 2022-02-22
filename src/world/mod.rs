@@ -1,15 +1,18 @@
+pub mod debug;
+pub mod edit;
+pub mod play;
+
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-use macroquad::{prelude::*, ui};
+use macroquad::prelude::*;
 
 use crate::audio::Audio;
 use crate::camera::{top_down_camera_controls, Camera};
-use crate::collider::Collider;
 use crate::entity::Entities;
-use crate::sprite::{Sprite, Sprites};
-use crate::static_layers::{StaticEntity, StaticLayers};
+use crate::sprite::Sprites;
+use crate::static_layers::StaticLayers;
 
 #[allow(clippy::module_name_repetitions)]
 pub enum WorldState {
@@ -30,7 +33,7 @@ pub struct World {
     main_camera: Camera,
 
     entities: Entities,
-    // Edit
+
     chosen_entity: Option<usize>,
 }
 
@@ -86,92 +89,6 @@ impl World {
         }
     }
 
-    fn edit_input(&mut self) {
-        let mouse = self.main_camera.mouse_world_position();
-
-        let lmb = is_mouse_button_pressed(MouseButton::Left);
-
-        if let Some(entity) = self.chosen_entity {
-            let entity = self
-                .entities
-                .get(entity)
-                .expect("Tried to get unexisting entity, chosen_entity set incorrectly");
-            if lmb {
-                let mut entity = entity.clone();
-                entity.pos = mouse;
-                self.static_layers.add_entity(0, entity);
-            } else {
-                self.sprites.draw(&entity.sprite, mouse);
-            }
-        }
-
-        set_default_camera();
-        if let Some(chosen) = self.entities.ui() {
-            self.chosen_entity = Some(chosen);
-        }
-
-        if ui::root_ui().button(None, "Save the level") {
-            self.save_level();
-        }
-    }
-
-    fn debug_input(&mut self) {
-        let mut line = 1u8;
-        let font_size = 24.0;
-        let line_height = font_size + 0.0;
-        let padding = 10.0;
-        let color = color_u8!(0, 0, 0, 255);
-
-        let camera_info = true;
-        let mouse_info = true;
-        let key_info = true;
-
-        if camera_info {
-            let camera = self.main_camera;
-            draw_text(
-                &format!(
-                    "target: {}, zoom: {:?}, view_port: {:?}",
-                    camera.target,
-                    camera.zoom,
-                    camera.viewport_size(),
-                ),
-                padding,
-                f32::from(line).mul_add(line_height, padding),
-                font_size,
-                color,
-            );
-            line += 1;
-        }
-
-        if mouse_info {
-            let mouse = self.main_camera.mouse_world_position();
-            draw_text(
-                &format!("mouse: {:?}, mouse_world: {}", mouse_position(), mouse),
-                padding,
-                f32::from(line).mul_add(line_height, padding),
-                font_size,
-                color,
-            );
-            line += 1;
-        }
-
-        if key_info {
-            for key_code in (0..1000).map(From::from) {
-                if is_key_down(key_code) {
-                    let text = format!("{:?}", key_code);
-                    draw_text(
-                        &text,
-                        padding,
-                        f32::from(line).mul_add(line_height, padding),
-                        font_size,
-                        color,
-                    );
-                    line += 1;
-                }
-            }
-        }
-    }
-
     pub fn update(&mut self) {
         self.update_time(get_time());
         let delta = self.time.delta;
@@ -201,39 +118,6 @@ impl World {
             WorldState::Edit => self.edit_draw(),
             _ => todo!(),
         }
-    }
-
-    fn edit_draw(&mut self) {
-        self.static_layers.draw(&self.sprites);
-    }
-
-    fn play_draw(&self) {
-        let Rect { x, y, w, h } = self.main_camera.viewport_rect();
-        draw_rectangle_lines(x, y, w, h, w / 100.0, color_u8!(50, 120, 100, 100));
-        let (width, height) = (screen_width(), screen_height());
-        let (center_x, center_y) = (self.main_camera.target.x, self.main_camera.target.y);
-        let top_left_x = center_x - width;
-        let top_left_y = center_y - height;
-        draw_rectangle_lines(
-            top_left_x,
-            top_left_y,
-            width * 2.0,
-            height * 2.0,
-            50.0,
-            color_u8!(50, 120, 100, 100),
-        );
-
-        draw_rectangle(-5.0, -5.0, 10.0, 10.0, color_u8!(180, 180, 180, 255));
-
-        self.static_layers.draw(&self.sprites);
-
-        set_default_camera();
-    }
-
-    fn debug_draw(&mut self) {
-        set_default_camera();
-        self.audio.debug();
-        self.sprites.debug();
     }
 
     #[cfg(not(target_arch = "wasm32"))]

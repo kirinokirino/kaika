@@ -14,7 +14,6 @@
     clippy::rc_mutex,
     clippy::rc_buffer,
     clippy::pattern_type_mismatch,
-    clippy::multiple_inherent_impl,
     clippy::missing_enforced_import_renames,
     clippy::lossy_float_literal,
     clippy::let_underscore_must_use,
@@ -44,7 +43,6 @@ mod audio;
 mod camera;
 mod collider;
 mod common;
-mod edit;
 mod entity;
 mod sprite;
 mod static_layers;
