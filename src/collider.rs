@@ -1,3 +1,5 @@
+use std::fmt::{self, Display};
+
 use macroquad::prelude::*;
 
 pub struct Collider {
@@ -24,5 +26,15 @@ impl Collider {
     pub fn draw(&self) {
         let Rect { x, y, w, h } = self.rect();
         draw_rectangle(x, y, w, h, color_u8!(255, 100, 100, 100));
+    }
+}
+
+impl Display for Collider {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Collider {{ x:{}, y:{}, w:{}, h:{} }} ",
+            self.pos.x, self.pos.y, self.width, self.height
+        )
     }
 }

@@ -1,6 +1,5 @@
-/// collider
-/// sprite
 use std::collections::{HashMap, HashSet};
+use std::fmt::{self, Display};
 
 use crate::collider::Collider;
 use crate::sprite::Sprites;
@@ -44,6 +43,22 @@ impl StaticLayers {
             }
         }
     }
+
+    pub fn save_file(&self) {
+        let mut contents = String::new();
+        for layer in &self.used_layers {
+            let mut layer_str: String = format!("Static layer {}:\n", layer);
+            let layer = self
+                .layer
+                .get(layer)
+                .expect("Unexisting layer in StaticLayers::used_layers");
+            for entity in layer {
+                layer_str.push_str(&format!("{}\n", entity));
+            }
+            contents.push_str(&format!("{}\n", &layer_str));
+        }
+        println!("{}", contents);
+    }
 }
 
 pub struct StaticEntity {
@@ -60,5 +75,11 @@ impl StaticEntity {
     pub fn debug(&self, sprites: &Sprites) {
         self.collider.draw();
         sprites.draw(self.sprite, self.collider.pos);
+    }
+}
+
+impl Display for StaticEntity {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "StaticEntity {{ {}, {} }}", self.sprite, self.collider)
     }
 }

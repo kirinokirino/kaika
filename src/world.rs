@@ -31,6 +31,7 @@ impl World {
 
     pub fn setup(&mut self) {
         self.add_static_entity();
+        self.add_static_entity();
     }
 
     pub fn add_static_entity(&mut self) {
@@ -49,6 +50,10 @@ impl World {
         let _s = is_key_down(KeyCode::S) || is_key_down(KeyCode::O);
         let _a = is_key_down(KeyCode::A);
         let _d = is_key_down(KeyCode::D) || is_key_down(KeyCode::E);
+
+        if is_key_pressed(KeyCode::Space) {
+            self.static_layers.save_file();
+        }
 
         let mut line = 1u8;
         let font_size = 24.0;
