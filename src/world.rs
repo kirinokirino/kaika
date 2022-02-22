@@ -49,8 +49,7 @@ impl World {
     }
 
     pub fn setup(&mut self) {
-        self.add_static_entity();
-        self.add_static_entity();
+        self.load_level();
     }
 
     pub fn add_static_entity(&mut self) {
@@ -264,6 +263,28 @@ impl World {
     }
     #[cfg(target_arch = "wasm32")]
     pub fn save_level(&self) {}
+
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn load_level(&self) {
+        let path = Path::new("./data/level0.txt");
+        let display = path.display();
+        // Open a file in write-only mode, returns `io::Result<File>`
+
+        use std::fs;
+        match fs::read_dir("./data/") {
+            Err(why) => println!("! {:?}", why.kind()),
+            Ok(paths) => {
+                for path in paths {
+                    println!("> {:?}", path.unwrap().path());
+                }
+            }
+        }
+
+        let contents = fs::read_to_string(&path).expect("couldn't read the level");
+        println!("{}", contents);
+    }
+    #[cfg(target_arch = "wasm32")]
+    pub fn load_level(&self) {}
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Default)]

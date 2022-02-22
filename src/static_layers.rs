@@ -50,7 +50,7 @@ impl Display for StaticLayers {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut contents = String::new();
         for layer in &self.used_layers {
-            let mut layer_str: String = format!("Static layer {}:\n", layer);
+            let mut layer_str: String = format!("StaticLayer {}:\n", layer);
             let layer = self
                 .layer
                 .get(layer)
