@@ -5,6 +5,10 @@ use crate::world::World;
 
 impl World {
     pub fn edit_input(&mut self) {
+        if is_key_pressed(KeyCode::Key1) {
+            self.entities.load_entities();
+        }
+
         let mouse = self.main_camera.mouse_world_position();
 
         let lmb = is_mouse_button_pressed(MouseButton::Left);
@@ -32,6 +36,7 @@ impl World {
             self.save_level();
         }
     }
+    pub fn edit_update(&mut self) {}
     pub fn edit_draw(&mut self) {
         self.static_layers.draw(&self.sprites);
     }

@@ -44,8 +44,10 @@ mod camera;
 mod collider;
 mod common;
 mod entity;
+mod player;
 mod sprite;
 mod static_layers;
+mod tween;
 mod world;
 
 pub const SPRITE_PATHS: &str = include_str!("../data/sprites.txt");

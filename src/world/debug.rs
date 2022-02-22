@@ -60,6 +60,8 @@ impl World {
         }
     }
 
+    pub fn debug_update(&mut self) {}
+
     pub fn debug_draw(&mut self) {
         set_default_camera();
         self.audio.debug();
