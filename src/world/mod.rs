@@ -15,6 +15,7 @@ use crate::collider::Collider;
 use crate::entity::Entities;
 use crate::player::Player;
 use crate::sprite::Sprites;
+use crate::static_layers::StaticEntity;
 use crate::static_layers::StaticLayers;
 
 #[allow(clippy::module_name_repetitions)]
@@ -62,7 +63,7 @@ impl World {
     }
 
     pub fn setup(&mut self) {
-        //self.load_level();
+        self.load_level();
         self.entities.load_entities();
         let sprites: Vec<String> = vec![
             "char1-idle".to_owned(),
@@ -77,15 +78,6 @@ impl World {
     }
 
     pub fn input(&mut self) {
-        if is_key_pressed(KeyCode::Space) {
-            self.state = match self.state {
-                WorldState::Play => WorldState::Debug,
-                WorldState::Debug => WorldState::Edit,
-                WorldState::Edit => WorldState::Play,
-                _ => todo!(),
-            }
-        }
-
         match self.state {
             WorldState::Menu => (),
             WorldState::Play => self.play_input(),
@@ -95,6 +87,14 @@ impl World {
 
         if is_key_down(KeyCode::LeftControl) {
             top_down_camera_controls(&mut self.main_camera);
+            if is_key_pressed(KeyCode::Space) {
+                self.state = match self.state {
+                    WorldState::Play => WorldState::Debug,
+                    WorldState::Debug => WorldState::Edit,
+                    WorldState::Edit => WorldState::Play,
+                    _ => todo!(),
+                }
+            }
         }
     }
 
@@ -168,7 +168,7 @@ impl World {
     pub fn save_level(&self) {}
 
     #[cfg(not(target_arch = "wasm32"))]
-    pub fn load_level(&self) {
+    pub fn load_level(&mut self) {
         let path = Path::new("./data/level0.txt");
         let display = path.display();
         // Open a file in write-only mode, returns `io::Result<File>`
@@ -183,7 +183,64 @@ impl World {
         }
 
         let contents = fs::read_to_string(&path).expect("couldn't read the level");
-        println!("{}", contents);
+
+        for line in contents.lines() {
+            if line.is_empty() {
+                continue;
+            }
+            let (token, rest) = line
+                .split_once(' ')
+                .expect("Every line has at least 1 space");
+            match token {
+                "StaticLayer" => {
+                    println!("Parsed beginning of the new StaticLayer")
+                }
+                "StaticEntity" => {
+                    let mut stuff = rest
+                        .split_ascii_whitespace()
+                        .filter(|e| e != &"{" && e != &"}");
+                    let sprite = stuff.next().unwrap().trim_matches(',');
+                    let pos_x = stuff
+                        .next()
+                        .unwrap()
+                        .trim_matches(',')
+                        .split(':')
+                        .nth(1)
+                        .expect("Didn't find a second item of y:f32 (<-- this)")
+                        .parse::<f32>()
+                        .expect("Could not parse the f32");
+
+                    let pos_y = stuff
+                        .next()
+                        .unwrap()
+                        .trim_matches(',')
+                        .split(':')
+                        .nth(1)
+                        .expect("Didn't find a second item of y:f32 (<-- this)")
+                        .parse::<f32>()
+                        .expect("Could not parse the f32");
+
+                    let mut collider = [0f32; 4];
+                    for (pair, to_parse) in stuff.skip(1).enumerate() {
+                        collider[pair] = to_parse
+                            .trim_matches(',')
+                            .split(':')
+                            .nth(1)
+                            .expect("Didn't find a second item of x:f32 (<-- this)")
+                            .parse::<f32>()
+                            .expect("Could not parse the f32");
+                    }
+                    let entity = StaticEntity::new(
+                        Vec2::new(pos_x, pos_y),
+                        sprite.to_owned(),
+                        Collider::from(collider),
+                    );
+                    println!("parsed {}", entity);
+                    self.static_layers.add_entity(0, entity);
+                }
+                _ => (),
+            }
+        }
     }
     #[cfg(target_arch = "wasm32")]
     pub fn load_level(&self) {}
