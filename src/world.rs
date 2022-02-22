@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-use macroquad::prelude::*;
+use macroquad::{prelude::*, ui};
 
 use crate::audio::Audio;
 use crate::camera::{top_down_camera_controls, Camera};
@@ -102,6 +102,10 @@ impl World {
             } else {
                 self.sprites.draw(entity, mouse);
             }
+        }
+
+        if ui::root_ui().button(None, "Save the level") {
+            self.save_level();
         }
     }
 
@@ -233,7 +237,30 @@ impl World {
 
     #[cfg(not(target_arch = "wasm32"))]
     pub fn save_level(&self) {
-        todo!()
+        let path = Path::new("./data/level0.txt");
+        let display = path.display();
+        // Open a file in write-only mode, returns `io::Result<File>`
+        match fs::read_dir("./data/") {
+            Err(why) => println!("! {:?}", why.kind()),
+            Ok(paths) => {
+                for path in paths {
+                    println!("> {:?}", path.unwrap().path());
+                }
+            }
+        }
+
+        let mut file = match File::create(&path) {
+            Err(why) => panic!("couldn't create {}: {}", display, why),
+            Ok(file) => file,
+        };
+
+        // Write the `LOREM_IPSUM` string to `file`, returns `io::Result<()>`
+
+        use std::fs;
+        match file.write_all(format!("{}", self.static_layers).as_bytes()) {
+            Err(why) => panic!("couldn't write to {}: {}", display, why),
+            Ok(_) => println!("successfully wrote to {}", display),
+        }
     }
     #[cfg(target_arch = "wasm32")]
     pub fn save_level(&self) {}

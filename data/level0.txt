@@ -1,0 +1,10 @@
+Static layer 0:
+StaticEntity { char1-fall, Collider { x:0, y:0, w:100, h:100 }  }
+StaticEntity { char1-fall, Collider { x:0, y:0, w:100, h:100 }  }
+StaticEntity { char1-fall, Collider { x:-622, y:-47.99999, w:100, h:100 }  }
+StaticEntity { char1-fall, Collider { x:-732, y:-508, w:100, h:100 }  }
+StaticEntity { platform1, Collider { x:93.999954, y:-366, w:100, h:100 }  }
+StaticEntity { platform1, Collider { x:443.99997, y:-244.00002, w:100, h:100 }  }
+StaticEntity { platform1, Collider { x:158, y:243.99998, w:100, h:100 }  }
+StaticEntity { platform1, Collider { x:-692, y:-582, w:100, h:100 }  }
+
