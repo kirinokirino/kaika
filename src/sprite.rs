@@ -46,12 +46,30 @@ impl Sprites {
         None
     }
 
+    pub fn get_sprite(&self, name: &str) -> Option<&Sprite> {
+        if let Some(sprite) = self.sprites.get(name) {
+            return Some(sprite);
+        }
+        eprintln!("ERROR: No sprite with name {} found", name);
+        return None;
+    }
+
     pub fn draw(&self, sprite: &str, pos: Vec2) {
         if let Some(sprite) = self.sprites.get(sprite) {
             sprite.draw(pos);
         } else {
             eprintln!("ERROR: Tried to draw a non-existing sprite: {}", sprite);
         }
+    }
+
+    pub fn ui(&self) -> Option<&'static str> {
+        let mut selection = None;
+        for name in self.sprites.keys() {
+            if ui::root_ui().button(None, *name) {
+                selection = Some(*name);
+            }
+        }
+        selection
     }
 
     pub fn debug(&mut self) {

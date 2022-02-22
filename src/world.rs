@@ -7,7 +7,7 @@ use macroquad::prelude::*;
 use crate::audio::Audio;
 use crate::camera::{top_down_camera_controls, Camera};
 use crate::collider::Collider;
-use crate::sprite::Sprites;
+use crate::sprite::{Sprite, Sprites};
 use crate::static_layers::{StaticEntity, StaticLayers};
 
 #[allow(clippy::module_name_repetitions)]
@@ -27,6 +27,9 @@ pub struct World {
 
     time: Time,
     main_camera: Camera,
+
+    // Edit
+    chosen_entity: Option<&'static str>,
 }
 
 impl World {
@@ -40,6 +43,8 @@ impl World {
 
             time: Time::default(),
             main_camera: Camera::new(),
+
+            chosen_entity: None,
         }
     }
 
@@ -59,7 +64,6 @@ impl World {
     }
 
     pub fn input(&mut self) {
-        let _lmb = is_mouse_button_pressed(MouseButton::Left);
         let _w = is_key_down(KeyCode::W) || is_key_down(KeyCode::Comma);
         let _s = is_key_down(KeyCode::S) || is_key_down(KeyCode::O);
         let _a = is_key_down(KeyCode::A);
@@ -68,11 +72,40 @@ impl World {
         if is_key_pressed(KeyCode::Space) {
             self.state = match self.state {
                 WorldState::Play => WorldState::Debug,
-                WorldState::Debug => WorldState::Play,
+                WorldState::Debug => WorldState::Edit,
+                WorldState::Edit => WorldState::Play,
                 _ => todo!(),
             }
         }
 
+        match self.state {
+            WorldState::Menu => (),
+            WorldState::Play => (),
+            WorldState::Edit => self.edit_input(),
+            WorldState::Debug => self.debug_input(),
+        }
+
+        if is_key_down(KeyCode::LeftControl) {
+            top_down_camera_controls(&mut self.main_camera);
+        }
+    }
+
+    fn edit_input(&mut self) {
+        let mouse = self.main_camera.mouse_world_position();
+
+        let lmb = is_mouse_button_pressed(MouseButton::Left);
+
+        if let Some(entity) = self.chosen_entity {
+            if lmb {
+                let entity = StaticEntity::new(entity, Collider::new(mouse, 100.0, 100.0));
+                self.static_layers.add_entity(0, entity);
+            } else {
+                self.sprites.draw(entity, mouse);
+            }
+        }
+    }
+
+    fn debug_input(&mut self) {
         let mut line = 1u8;
         let font_size = 24.0;
         let line_height = font_size + 0.0;
@@ -127,10 +160,6 @@ impl World {
                 }
             }
         }
-
-        if is_key_down(KeyCode::LeftControl) {
-            top_down_camera_controls(&mut self.main_camera);
-        }
     }
 
     pub fn update(&mut self) {
@@ -147,14 +176,6 @@ impl World {
     }
 
     pub fn draw(&mut self) {
-        match self.state {
-            WorldState::Debug => self.debug_draw(),
-            WorldState::Play => self.play_draw(),
-            _ => todo!(),
-        }
-    }
-
-    fn play_draw(&self) {
         // Camera space, render game objects
         let zoom = vec2(self.main_camera.zoom.x, -self.main_camera.zoom.y);
         set_camera(&Camera2D {
@@ -164,6 +185,24 @@ impl World {
             ..Camera2D::default()
         });
 
+        match self.state {
+            WorldState::Debug => self.debug_draw(),
+            WorldState::Play => self.play_draw(),
+            WorldState::Edit => self.edit_draw(),
+            _ => todo!(),
+        }
+    }
+
+    fn edit_draw(&mut self) {
+        self.static_layers.draw(&self.sprites);
+
+        set_default_camera();
+        if let Some(chosen) = self.sprites.ui() {
+            self.chosen_entity = Some(chosen);
+        }
+    }
+
+    fn play_draw(&self) {
         let Rect { x, y, w, h } = self.main_camera.viewport_rect();
         draw_rectangle_lines(x, y, w, h, w / 100.0, color_u8!(50, 120, 100, 100));
         let (width, height) = (screen_width(), screen_height());
@@ -187,6 +226,7 @@ impl World {
     }
 
     fn debug_draw(&mut self) {
+        set_default_camera();
         self.audio.debug();
         self.sprites.debug();
     }
