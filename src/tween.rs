@@ -1,4 +1,4 @@
-const TIMESTEP: f32 = 1000.0 / 30.0;
+const TWEEN_PERIOD: f32 = 1000.0 / 30.0;
 
 #[derive(Debug, Clone)]
 pub struct Tween {
@@ -33,9 +33,14 @@ impl Tween {
         }
     }
 
+    pub fn is_over(&self) -> bool {
+        let time_length = (self.waveform.len()) as f32 * TWEEN_PERIOD;
+        self.time * 1000.0 >= time_length
+    }
+
     pub fn value(&mut self) -> f32 {
         if !self.stopped {
-            let step = ((1000.0 * self.time) / TIMESTEP).floor() as usize;
+            let step = ((1000.0 * self.time) / TWEEN_PERIOD).floor() as usize;
             if let Some(value) = self.waveform.get(step) {
                 self.value = *value;
             } else {
