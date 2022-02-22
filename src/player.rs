@@ -38,19 +38,27 @@ impl Player {
         }
     }
 
-    pub fn jump(&mut self) {}
+    pub fn jump(&mut self) {
+        self.state = PlayerState::Jumping;
+    }
 
     pub fn left(&mut self) {
         self.speed_tween.stopped = false;
         self.right = false;
+        self.state = PlayerState::Running;
     }
 
     pub fn right(&mut self) {
         self.speed_tween.stopped = false;
         self.right = true;
+        self.state = PlayerState::Running;
     }
 
     pub fn stop(&mut self) {
+        let some_check = false;
+        if some_check {
+            self.state = PlayerState::Idle;
+        }
         self.speed_tween.reset();
     }
 
@@ -65,6 +73,11 @@ impl Player {
     }
 
     pub fn draw(&self, sprites: &Sprites) {
-        sprites.draw(&self.sprites[0], self.pos);
+        match self.state {
+            PlayerState::Idle => sprites.draw(&self.sprites[0], self.pos),
+            PlayerState::Running => sprites.draw(&self.sprites[0], self.pos),
+            PlayerState::Jumping => sprites.draw(&self.sprites[1], self.pos),
+            PlayerState::Falling => sprites.draw(&self.sprites[2], self.pos),
+        }
     }
 }
