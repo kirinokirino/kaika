@@ -1,6 +1,8 @@
 use std::collections::{HashMap, HashSet};
 use std::fmt::{self, Display};
 
+use macroquad::math::Vec2;
+
 use crate::collider::Collider;
 use crate::sprite::Sprites;
 
@@ -64,25 +66,35 @@ impl Display for StaticLayers {
     }
 }
 
+#[derive(Clone)]
 pub struct StaticEntity {
+    pub pos: Vec2,
     collider: Collider,
-    sprite: &'static str,
+    pub sprite: String,
 }
 
 impl StaticEntity {
     #[must_use]
-    pub const fn new(sprite: &'static str, collider: Collider) -> Self {
-        Self { collider, sprite }
+    pub const fn new(pos: Vec2, sprite: String, collider: Collider) -> Self {
+        Self {
+            pos,
+            collider,
+            sprite,
+        }
     }
 
     pub fn debug(&self, sprites: &Sprites) {
-        self.collider.draw();
-        sprites.draw(self.sprite, self.collider.pos);
+        sprites.draw(&self.sprite, self.pos);
+        self.collider.draw(self.pos);
     }
 }
 
 impl Display for StaticEntity {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "StaticEntity {{ {}, {} }}", self.sprite, self.collider)
+        write!(
+            f,
+            "StaticEntity {{ {}, x:{}, y:{}, {} }}",
+            self.sprite, self.pos.x, self.pos.y, self.collider
+        )
     }
 }

@@ -44,6 +44,8 @@ mod audio;
 mod camera;
 mod collider;
 mod common;
+mod edit;
+mod entity;
 mod sprite;
 mod static_layers;
 mod world;

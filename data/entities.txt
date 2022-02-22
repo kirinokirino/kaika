@@ -1,0 +1,8 @@
+Entity 0:
+StaticEntity { platform1, Collider { x:30, y:35, w:190, h:40 }  }
+Entity 1:
+StaticEntity { star1, Collider { x:18, y:18, w:90, h:90 } }
+Entity 2:
+StaticEntity { star2, Collider { x:38, y:43, w:50, h:50 } }
+Entity 3:
+StaticEntity { star3, Collider { x:38, y:43, w:50, h:50 } }

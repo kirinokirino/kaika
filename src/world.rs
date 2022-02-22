@@ -7,6 +7,7 @@ use macroquad::{prelude::*, ui};
 use crate::audio::Audio;
 use crate::camera::{top_down_camera_controls, Camera};
 use crate::collider::Collider;
+use crate::entity::Entities;
 use crate::sprite::{Sprite, Sprites};
 use crate::static_layers::{StaticEntity, StaticLayers};
 
@@ -28,8 +29,9 @@ pub struct World {
     time: Time,
     main_camera: Camera,
 
+    entities: Entities,
     // Edit
-    chosen_entity: Option<&'static str>,
+    chosen_entity: Option<usize>,
 }
 
 impl World {
@@ -44,22 +46,14 @@ impl World {
             time: Time::default(),
             main_camera: Camera::new(),
 
+            entities: Entities::new(),
             chosen_entity: None,
         }
     }
 
     pub fn setup(&mut self) {
-        self.load_level();
-    }
-
-    pub fn add_static_entity(&mut self) {
-        let sprite = self
-            .sprites
-            .get_sprite_name_by_id(0)
-            .expect("no sprite with id 0");
-        let collider = Collider::new(Vec2::new(0.0, 0.0), 100.0, 100.0);
-        let entity = StaticEntity::new(sprite, collider);
-        self.static_layers.add_entity(0, entity);
+        //self.load_level();
+        self.entities.load_entities();
     }
 
     pub fn input(&mut self) {
@@ -68,6 +62,9 @@ impl World {
         let _a = is_key_down(KeyCode::A);
         let _d = is_key_down(KeyCode::D) || is_key_down(KeyCode::E);
 
+        if is_key_pressed(KeyCode::Key1) {
+            self.entities.load_entities();
+        }
         if is_key_pressed(KeyCode::Space) {
             self.state = match self.state {
                 WorldState::Play => WorldState::Debug,
@@ -95,12 +92,22 @@ impl World {
         let lmb = is_mouse_button_pressed(MouseButton::Left);
 
         if let Some(entity) = self.chosen_entity {
+            let entity = self
+                .entities
+                .get(entity)
+                .expect("Tried to get unexisting entity, chosen_entity set incorrectly");
             if lmb {
-                let entity = StaticEntity::new(entity, Collider::new(mouse, 100.0, 100.0));
+                let mut entity = entity.clone();
+                entity.pos = mouse;
                 self.static_layers.add_entity(0, entity);
             } else {
-                self.sprites.draw(entity, mouse);
+                self.sprites.draw(&entity.sprite, mouse);
             }
+        }
+
+        set_default_camera();
+        if let Some(chosen) = self.entities.ui() {
+            self.chosen_entity = Some(chosen);
         }
 
         if ui::root_ui().button(None, "Save the level") {
@@ -198,11 +205,6 @@ impl World {
 
     fn edit_draw(&mut self) {
         self.static_layers.draw(&self.sprites);
-
-        set_default_camera();
-        if let Some(chosen) = self.sprites.ui() {
-            self.chosen_entity = Some(chosen);
-        }
     }
 
     fn play_draw(&self) {
