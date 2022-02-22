@@ -76,8 +76,6 @@ async fn main() {
         world.update();
         world.draw();
 
-        world.debug();
-
         next_frame().await;
     }
 }

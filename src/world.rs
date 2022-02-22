@@ -10,7 +10,16 @@ use crate::collider::Collider;
 use crate::sprite::Sprites;
 use crate::static_layers::{StaticEntity, StaticLayers};
 
+#[allow(clippy::module_name_repetitions)]
+pub enum WorldState {
+    Menu,
+    Play,
+    Edit,
+    Debug,
+}
+
 pub struct World {
+    pub state: WorldState,
     sprites: Sprites,
     audio: Audio,
 
@@ -23,6 +32,7 @@ pub struct World {
 impl World {
     pub fn new(audio: Audio, sprites: Sprites) -> Self {
         Self {
+            state: WorldState::Debug,
             audio,
             sprites,
 
@@ -55,7 +65,13 @@ impl World {
         let _a = is_key_down(KeyCode::A);
         let _d = is_key_down(KeyCode::D) || is_key_down(KeyCode::E);
 
-        if is_key_pressed(KeyCode::Space) {}
+        if is_key_pressed(KeyCode::Space) {
+            self.state = match self.state {
+                WorldState::Play => WorldState::Debug,
+                WorldState::Debug => WorldState::Play,
+                _ => todo!(),
+            }
+        }
 
         let mut line = 1u8;
         let font_size = 24.0;
@@ -130,7 +146,15 @@ impl World {
         };
     }
 
-    pub fn draw(&self) {
+    pub fn draw(&mut self) {
+        match self.state {
+            WorldState::Debug => self.debug_draw(),
+            WorldState::Play => self.play_draw(),
+            _ => todo!(),
+        }
+    }
+
+    fn play_draw(&self) {
         // Camera space, render game objects
         let zoom = vec2(self.main_camera.zoom.x, -self.main_camera.zoom.y);
         set_camera(&Camera2D {
@@ -162,7 +186,7 @@ impl World {
         set_default_camera();
     }
 
-    pub fn debug(&mut self) {
+    fn debug_draw(&mut self) {
         self.audio.debug();
         self.sprites.debug();
     }
