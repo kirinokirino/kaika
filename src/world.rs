@@ -1,3 +1,7 @@
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
+
 use macroquad::prelude::*;
 
 use crate::audio::Audio;
@@ -51,9 +55,7 @@ impl World {
         let _a = is_key_down(KeyCode::A);
         let _d = is_key_down(KeyCode::D) || is_key_down(KeyCode::E);
 
-        if is_key_pressed(KeyCode::Space) {
-            self.static_layers.save_file();
-        }
+        if is_key_pressed(KeyCode::Space) {}
 
         let mut line = 1u8;
         let font_size = 24.0;
@@ -164,6 +166,13 @@ impl World {
         self.audio.debug();
         self.sprites.debug();
     }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn save_level(&self) {
+        todo!()
+    }
+    #[cfg(target_arch = "wasm32")]
+    pub fn save_level(&self) {}
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Default)]

@@ -43,8 +43,11 @@ impl StaticLayers {
             }
         }
     }
+}
 
-    pub fn save_file(&self) {
+impl Display for StaticLayers {
+    #[allow(clippy::unwrap_in_result)]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut contents = String::new();
         for layer in &self.used_layers {
             let mut layer_str: String = format!("Static layer {}:\n", layer);
@@ -57,7 +60,7 @@ impl StaticLayers {
             }
             contents.push_str(&format!("{}\n", &layer_str));
         }
-        println!("{}", contents);
+        write!(f, "{}", contents)
     }
 }
 
