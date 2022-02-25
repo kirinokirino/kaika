@@ -4,7 +4,9 @@ use macroquad::ui;
 use crate::world::World;
 
 impl World {
-    pub(super) fn edit_setup(&self) {}
+    pub(super) fn edit_setup(&mut self) {
+        self.load_level();
+    }
 
     pub(super) fn edit_input(&mut self) {
         if is_key_pressed(KeyCode::Key1) {

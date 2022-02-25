@@ -170,6 +170,7 @@ impl World {
 
     #[cfg(not(target_arch = "wasm32"))]
     pub fn load_level(&mut self) {
+        self.static_layers = StaticLayers::new();
         let path = Path::new("./data/level0.txt");
         let display = path.display();
         // Open a file in write-only mode, returns `io::Result<File>`
