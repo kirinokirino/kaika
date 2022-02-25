@@ -4,7 +4,9 @@ use macroquad::ui;
 use crate::world::World;
 
 impl World {
-    pub fn edit_input(&mut self) {
+    pub(super) fn edit_setup(&self) {}
+
+    pub(super) fn edit_input(&mut self) {
         if is_key_pressed(KeyCode::Key1) {
             self.entities.load_entities();
         }
@@ -34,12 +36,12 @@ impl World {
                         * 0.5
                 };
                 entity.pos = mouse - offset;
-                self.static_layers.add_entity(0, entity);
+                self.static_layers.replace(entity);
             }
         }
     }
-    pub fn edit_update(&mut self) {}
-    pub fn edit_draw(&mut self) {
+    pub(super) fn edit_update(&mut self) {}
+    pub(super) fn edit_draw(&mut self) {
         self.static_layers.draw(&self.sprites);
         if let Some(entity) = self.chosen_entity {
             let mouse = self.main_camera.mouse_world_position();

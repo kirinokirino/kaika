@@ -65,23 +65,6 @@ impl World {
     pub fn setup(&mut self) {
         self.load_level();
         self.entities.load_entities();
-        let player_collider = &self
-            .entities
-            .find("char1-idle")
-            .expect("Couldn't find player in entities")
-            .collider;
-        let sprites: Vec<String> = vec![
-            "char1-idle".to_owned(),
-            "char1-jump".to_owned(),
-            "char1-fall".to_owned(),
-        ];
-        self.player = Some(Player::new(
-            Vec2::new(0.0, 0.0),
-            player_collider
-                .clone()
-                .expect("Player entity should have a collider"),
-            &sprites,
-        ));
     }
 
     pub fn input(&mut self) {
@@ -96,9 +79,18 @@ impl World {
             top_down_camera_controls(&mut self.main_camera);
             if is_key_pressed(KeyCode::Space) {
                 self.state = match self.state {
-                    WorldState::Play => WorldState::Debug,
-                    WorldState::Debug => WorldState::Edit,
-                    WorldState::Edit => WorldState::Play,
+                    WorldState::Play => {
+                        self.debug_setup();
+                        WorldState::Debug
+                    }
+                    WorldState::Debug => {
+                        self.edit_setup();
+                        WorldState::Edit
+                    }
+                    WorldState::Edit => {
+                        self.play_setup();
+                        WorldState::Play
+                    }
                     _ => todo!(),
                 }
             }
@@ -112,6 +104,7 @@ impl World {
         match self.state {
             WorldState::Menu => (),
             WorldState::Play => self.play_update(delta),
+
             WorldState::Edit => self.edit_update(),
             WorldState::Debug => self.debug_update(),
         }

@@ -3,7 +3,9 @@ use macroquad::prelude::*;
 use crate::world::World;
 
 impl World {
-    pub fn debug_input(&mut self) {
+    pub(super) fn debug_setup(&self) {}
+
+    pub(super) fn debug_input(&mut self) {
         let mut line = 1u8;
         let font_size = 24.0;
         let line_height = font_size + 0.0;
@@ -60,9 +62,9 @@ impl World {
         }
     }
 
-    pub fn debug_update(&mut self) {}
+    pub(super) fn debug_update(&mut self) {}
 
-    pub fn debug_draw(&mut self) {
+    pub(super) fn debug_draw(&mut self) {
         set_default_camera();
         self.audio.debug();
         self.sprites.debug();

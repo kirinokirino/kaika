@@ -1,9 +1,35 @@
 use macroquad::prelude::*;
 
+use crate::collider::Collider;
+use crate::player::Player;
+use crate::static_layers::StaticEntity;
 use crate::world::World;
 
 impl World {
-    pub fn play_input(&mut self) {
+    pub(super) fn play_setup(&mut self) {
+        let spawn = "char1-spawn";
+        if let Some(player_spawn) = self.static_layers.find(spawn) {
+            let StaticEntity {
+                pos,
+                collider,
+                sprite,
+            } = player_spawn;
+            let collider = collider
+                .clone()
+                .expect("player_spawn should have a Collider");
+            let sprites: Vec<String> = vec![
+                "char1-idle".to_owned(),
+                "char1-jump".to_owned(),
+                "char1-fall".to_owned(),
+            ];
+            let new_collider = Collider::new(collider.pos, 0.0, 0.0);
+            self.player = Some(Player::new(*pos, collider, &sprites));
+            let new_spawn = StaticEntity::new(*pos, sprite.clone(), new_collider);
+            self.static_layers.replace(new_spawn);
+        }
+    }
+
+    pub(super) fn play_input(&mut self) {
         let _w = is_key_down(KeyCode::W) || is_key_down(KeyCode::Comma);
         let _s = is_key_down(KeyCode::S) || is_key_down(KeyCode::O);
         let a = is_key_down(KeyCode::A);
@@ -25,14 +51,14 @@ impl World {
         }
     }
 
-    pub fn play_update(&mut self, delta: f64) {
+    pub(super) fn play_update(&mut self, delta: f64) {
         if let Some(player) = &mut self.player {
             player.update(&self.static_layers, delta);
             self.main_camera.target += (player.pos - self.main_camera.target) * 0.2;
         }
     }
 
-    pub fn play_draw(&self) {
+    pub(super) fn play_draw(&self) {
         let Rect { x, y, w, h } = self.main_camera.viewport_rect();
         draw_rectangle_lines(x, y, w, h, w / 100.0, color_u8!(50, 120, 100, 100));
         let (width, height) = (screen_width(), screen_height());

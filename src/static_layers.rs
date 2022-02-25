@@ -96,6 +96,43 @@ impl StaticLayers {
         }
         end_position
     }
+
+    pub fn replace(&mut self, entity: StaticEntity) {
+        let z_index = 0;
+        let is_new_layer = self.used_layers.insert(z_index);
+        if is_new_layer {
+            println!("Creating a new z_index layer {}", z_index);
+            let new_layer: Vec<StaticEntity> = vec![entity];
+            self.layer.insert(z_index, new_layer);
+        } else {
+            for layer_entity in self
+                .layer
+                .get_mut(&z_index)
+                .expect("Layer found in used_layers did not actually exist.")
+            {
+                if layer_entity.sprite == entity.sprite {
+                    *layer_entity = entity;
+                    return;
+                }
+            }
+        }
+    }
+
+    #[allow(clippy::unwrap_in_result)]
+    pub fn find(&self, name: &str) -> Option<&StaticEntity> {
+        for layer in &self.used_layers {
+            let layer = self
+                .layer
+                .get(layer)
+                .expect("Unexisting layer in StaticLayers::used_layers");
+            for entity in layer {
+                if entity.sprite == name {
+                    return Some(entity);
+                }
+            }
+        }
+        None
+    }
 }
 
 impl Display for StaticLayers {
