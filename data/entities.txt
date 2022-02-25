@@ -6,3 +6,5 @@ Entity 2:
 StaticEntity { star2, Collider { x:38, y:43, w:50, h:50 } }
 Entity 3:
 StaticEntity { star3, Collider { x:38, y:43, w:50, h:50 } }
+Entity 4:
+StaticEntity { char1-idle, Collider { x:50, y:40, w:100, h:300 } }

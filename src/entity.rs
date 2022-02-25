@@ -22,6 +22,15 @@ impl Entities {
         self.static_entities.get(entity)
     }
 
+    pub fn find(&self, sprite_name: &str) -> Option<&StaticEntity> {
+        for entity in &self.static_entities {
+            if entity.sprite == sprite_name {
+                return Some(entity);
+            }
+        }
+        return None;
+    }
+
     #[cfg(not(target_arch = "wasm32"))]
     pub fn load_entities(&mut self) {
         let path = Path::new("./data/entities.txt");

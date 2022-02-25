@@ -65,6 +65,11 @@ impl World {
     pub fn setup(&mut self) {
         self.load_level();
         self.entities.load_entities();
+        let player_collider = &self
+            .entities
+            .find("char1-idle")
+            .expect("Couldn't find player in entities")
+            .collider;
         let sprites: Vec<String> = vec![
             "char1-idle".to_owned(),
             "char1-jump".to_owned(),
@@ -72,7 +77,7 @@ impl World {
         ];
         self.player = Some(Player::new(
             Vec2::new(0.0, 0.0),
-            Collider::new(Vec2::new(0.0, 0.0), 100.0, 100.0),
+            player_collider.clone(),
             &sprites,
         ));
     }

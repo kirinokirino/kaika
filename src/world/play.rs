@@ -54,6 +54,7 @@ impl World {
 
         if let Some(player) = &self.player {
             player.draw(&self.sprites);
+            player.collider.draw(player.pos);
         }
 
         set_default_camera();
