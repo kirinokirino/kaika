@@ -113,8 +113,9 @@ impl World {
     }
 
     fn update_time(&mut self, time: f64) {
+        let speed = 1.0;
         self.time = Time {
-            delta: time - self.time.overall,
+            delta: (time - self.time.overall) * speed,
             overall: get_time(),
         };
     }
