@@ -27,7 +27,7 @@ impl World {
 
     pub fn play_update(&mut self, delta: f64) {
         if let Some(player) = &mut self.player {
-            player.update(delta);
+            player.update(&self.static_layers, delta);
             self.main_camera.target += (player.pos - self.main_camera.target) * 0.2;
         }
     }

@@ -4,6 +4,7 @@ use macroquad::math::Vec2;
 
 use crate::collider::Collider;
 use crate::sprite::Sprites;
+use crate::static_layers::StaticLayers;
 use crate::tween::{Tween, TWEEN_PERIOD};
 
 #[derive(PartialEq, Debug)]
@@ -19,6 +20,7 @@ pub struct Player {
     pub pos: Vec2,
     right: bool,
     speed_tween: Tween,
+    start_jumping_y: f32,
     jump_tween: Tween,
     pub collider: Collider,
     pub sprites: Vec<String>,
@@ -38,6 +40,7 @@ impl Player {
             pos,
             right: true,
             speed_tween,
+            start_jumping_y: 0.0,
             jump_tween,
             collider,
             sprites,
@@ -50,6 +53,7 @@ impl Player {
         if self.jump_tween.stopped {
             self.state = PlayerState::Jumping;
             self.jump_tween.stopped = false;
+            self.start_jumping_y = self.pos.y;
         }
     }
 
@@ -90,22 +94,31 @@ impl Player {
         self.speed_tween.reset();
     }
 
-    pub fn update(&mut self, delta: f64) {
+    pub fn update(&mut self, static_layers: &StaticLayers, delta: f64) {
+        // X
         self.speed_tween.update(delta);
-        self.jump_tween.update(delta);
-        if self.jump_tween.is_over() {
-            self.jump_tween.reset();
-        }
         let speed_x = if self.right {
             self.speed_tween.value() * 20.0
         } else {
             self.speed_tween.value() * -20.0
         };
-        self.pos.x += speed_x * delta as f32;
-        let jump_speed = self.jump_tween.value() * -5.0;
+        // Y
+        self.jump_tween.update(delta);
+        if self.jump_tween.is_over() {
+            self.jump_tween.reset();
+        }
+        let jump_offset = self.jump_tween.value() * -5.0;
+        let speed_offset = speed_x * delta as f32;
 
-        self.pos.y = jump_speed;
+        let end = Vec2::new(
+            self.pos.x + speed_offset,
+            self.start_jumping_y + jump_offset,
+        );
 
+        let collision = static_layers.get_collision_point(&self.collider, self.pos, end, 0);
+        self.pos = collision;
+
+        // Set sprite to falling after some jumping time.
         if self.jump_tween.time > JUMP_END_OFFSET as f32 * TWEEN_PERIOD {
             self.state = PlayerState::Falling;
         }

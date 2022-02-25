@@ -45,6 +45,53 @@ impl StaticLayers {
             }
         }
     }
+
+    pub fn get_collision_point(
+        &self,
+        collider: &Collider,
+        start_position: Vec2,
+        end_position: Vec2,
+        layer: i32,
+    ) -> Vec2 {
+        let target = end_position - start_position;
+        let direction = target.normalize();
+        let length = target.length();
+        if length < 1.0 {
+            let temp_collider = collider.rect().offset(target + start_position);
+            if let Some(layer) = self.layer.get(&layer) {
+                for collider in layer {
+                    if let Some(collision_rect) = collider
+                        .collider
+                        .rect()
+                        .offset(collider.pos)
+                        .intersect(temp_collider)
+                    {
+                        return start_position;
+                    }
+                }
+            }
+            return end_position;
+        }
+        for step in 1..length.floor() as i32 {
+            let temp_collider = collider
+                .rect()
+                .offset(step as f32 * direction + start_position);
+
+            if let Some(layer) = self.layer.get(&layer) {
+                for collider in layer {
+                    if let Some(collision_rect) = collider
+                        .collider
+                        .rect()
+                        .offset(collider.pos)
+                        .intersect(temp_collider)
+                    {
+                        return step as f32 * direction + start_position;
+                    }
+                }
+            }
+        }
+        end_position
+    }
 }
 
 impl Display for StaticLayers {
