@@ -20,10 +20,9 @@ impl World {
                 .expect("Tried to get unexisting entity, chosen_entity set incorrectly");
             if lmb {
                 let mut entity = entity.clone();
-                entity.pos = mouse;
+                let offset = entity.collider.center();
+                entity.pos = mouse - offset;
                 self.static_layers.add_entity(0, entity);
-            } else {
-                self.sprites.draw(&entity.sprite, mouse);
             }
         }
 
@@ -39,5 +38,14 @@ impl World {
     pub fn edit_update(&mut self) {}
     pub fn edit_draw(&mut self) {
         self.static_layers.draw(&self.sprites);
+        if let Some(entity) = self.chosen_entity {
+            let mouse = self.main_camera.mouse_world_position();
+            let entity = self
+                .entities
+                .get(entity)
+                .expect("Tried to get unexisting entity, chosen_entity set incorrectly");
+
+            self.sprites.draw_at_center(&entity.sprite, mouse);
+        }
     }
 }

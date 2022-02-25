@@ -62,6 +62,15 @@ impl Sprites {
         }
     }
 
+    pub fn draw_at_center(&self, sprite: &str, pos: Vec2) {
+        if let Some(sprite) = self.sprites.get(sprite) {
+            let offset = sprite.size() * 0.5;
+            sprite.draw(pos - offset);
+        } else {
+            eprintln!("ERROR: Tried to draw a non-existing sprite: {}", sprite);
+        }
+    }
+
     pub fn ui(&self) -> Option<&'static str> {
         let mut selection = None;
         for name in self.sprites.keys() {
@@ -94,6 +103,10 @@ impl Sprite {
     pub async fn new(path: &'static str) -> Self {
         let texture = load_texture(path).await.expect("Failed to load texture");
         Self { path, texture }
+    }
+
+    pub fn size(&self) -> Vec2 {
+        Vec2::new(self.texture.width(), self.texture.height())
     }
 
     pub fn draw(&self, pos: Vec2) {

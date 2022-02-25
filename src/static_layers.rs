@@ -69,7 +69,7 @@ impl Display for StaticLayers {
 #[derive(Clone)]
 pub struct StaticEntity {
     pub pos: Vec2,
-    collider: Collider,
+    pub collider: Collider,
     pub sprite: String,
 }
 

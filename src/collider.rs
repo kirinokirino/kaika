@@ -25,6 +25,13 @@ impl Collider {
         }
     }
 
+    pub fn center(&self) -> Vec2 {
+        Vec2::new(
+            self.pos.x + self.width / 2.0,
+            self.pos.y + self.height / 2.0,
+        )
+    }
+
     pub fn draw(&self, offset: Vec2) {
         let Rect { x, y, w, h } = self.rect();
         draw_rectangle(
