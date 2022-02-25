@@ -1,10 +1,32 @@
 Entity 0:
 StaticEntity { platform1, Collider { x:30, y:35, w:190, h:40 }  }
 Entity 1:
-StaticEntity { star1, Collider { x:18, y:18, w:90, h:90 } }
-Entity 2:
-StaticEntity { star2, Collider { x:38, y:43, w:50, h:50 } }
-Entity 3:
-StaticEntity { star3, Collider { x:38, y:43, w:50, h:50 } }
-Entity 4:
 StaticEntity { char1-idle, Collider { x:50, y:40, w:100, h:300 } }
+Entity 2:
+StaticEntity { star1, Collider { x:50, y:40, w:0, h:0 } }
+Entity 3:
+StaticEntity { star2, Collider { x:50, y:40, w:0, h:0 } }
+Entity 4:
+StaticEntity { star3, Collider { x:50, y:40, w:0, h:0 } }
+Entity 5:
+StaticEntity { stars1, Collider { x:50, y:40, w:0, h:0 } }
+Entity 6:
+StaticEntity { moon0, Collider { x:50, y:40, w:0, h:0 } }
+Entity 7:
+StaticEntity { moon1, Collider { x:50, y:40, w:0, h:0 } }
+Entity 8:
+StaticEntity { cloud1, Collider { x:50, y:40, w:0, h:0 } }
+Entity 9:
+StaticEntity { cloud2, Collider { x:50, y:40, w:0, h:0 } }
+Entity 10:
+StaticEntity { cloud3, Collider { x:50, y:40, w:0, h:0 } }
+Entity 11:
+StaticEntity { cloud4, Collider { x:50, y:40, w:0, h:0 } }
+Entity 12:
+StaticEntity { cloud5, Collider { x:50, y:40, w:0, h:0 } }
+Entity 13:
+StaticEntity { cloud6, Collider { x:50, y:40, w:0, h:0 } }
+Entity 14:
+StaticEntity { cloud7, Collider { x:50, y:40, w:0, h:0 } }
+Entity 15:
+StaticEntity { cloud8, Collider { x:50, y:40, w:0, h:0 } }

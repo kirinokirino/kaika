@@ -5,3 +5,14 @@ sprites/char1-fall.png
 sprites/star1.png
 sprites/star2.png
 sprites/star3.png
+sprites/moon0.png
+sprites/moon1.png
+sprites/stars1.png
+sprites/cloud1.png
+sprites/cloud2.png
+sprites/cloud3.png
+sprites/cloud4.png
+sprites/cloud5.png
+sprites/cloud6.png
+sprites/cloud7.png
+sprites/cloud8.png
