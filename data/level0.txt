@@ -1,26 +1,19 @@
 StaticLayer 0:
-StaticEntity { platform1, x:-348, y:-324, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { platform1, x:-776, y:-536, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { star1, x:130.00002, y:-448, Collider { x:25, y:25, w:100, h:100 }  }
-StaticEntity { star1, x:448.9245, y:-571.10016, Collider { x:18, y:18, w:100, h:100 }  }
-StaticEntity { star1, x:234.88026, y:-655.39197, Collider { x:18, y:18, w:90, h:90 }  }
-StaticEntity { star1, x:-232.98624, y:-670.54553, Collider { x:18, y:18, w:90, h:90 }  }
-StaticEntity { star2, x:51.143295, y:-791.77386, Collider { x:18, y:18, w:90, h:90 }  }
-StaticEntity { star2, x:308.75403, y:-989.7174, Collider { x:50, y:50, w:50, h:50 }  }
-StaticEntity { star2, x:98.49817, y:-1055.0673, Collider { x:50, y:50, w:50, h:50 }  }
-StaticEntity { star2, x:-26.518814, y:-1026.6543, Collider { x:40, y:40, w:50, h:50 }  }
-StaticEntity { star2, x:-69.673004, y:-1086.7593, Collider { x:38, y:43, w:50, h:50 }  }
-StaticEntity { star2, x:-502.15433, y:-1525.0603, Collider { x:38, y:43, w:50, h:50 }  }
-StaticEntity { star2, x:-781.23895, y:-1421.9902, Collider { x:38, y:43, w:50, h:50 }  }
-StaticEntity { star3, x:17.82698, y:-1394.8726, Collider { x:38, y:43, w:50, h:50 }  }
-StaticEntity { star3, x:-1458.8998, y:-1649.1091, Collider { x:38, y:43, w:50, h:50 }  }
-StaticEntity { platform1, x:-540.7993, y:58, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { platform1, x:-508.79932, y:292, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { platform1, x:-408.79932, y:460, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { platform1, x:155.20067, y:584, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { platform1, x:815.2007, y:584, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { platform1, x:1069.2007, y:492, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { platform1, x:1171.2007, y:322, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { platform1, x:1257.2007, y:26, Collider { x:30, y:35, w:190, h:40 }  }
-StaticEntity { platform1, x:-430.79932, y:-178, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { cloud1, x:-185.49997, y:-518 }
+StaticEntity { cloud6, x:-568.8364, y:106.207855 }
+StaticEntity { moon0, x:664.7899, y:-1238.8853 }
+StaticEntity { star2, x:-1268.3665, y:-1512.3271 }
+StaticEntity { cloud4, x:-252.54437, y:-1939.8444 }
+StaticEntity { cloud4, x:1164.5488, y:-1386.1062 }
+StaticEntity { cloud8, x:-1199.883, y:-909.1807 }
+StaticEntity { cloud6, x:-1771.5793, y:-483.25525 }
+StaticEntity { cloud3, x:-2728.4844, y:-2462.0864 }
+StaticEntity { star2, x:-2048.3633, y:-2941.3286 }
+StaticEntity { moon0, x:-3086.3396, y:-2185.5986 }
+StaticEntity { moon1, x:-811.84546, y:-3394.294 }
+StaticEntity { char1-spawn, x:129.18478, y:-2765.0684, Collider { x:50, y:40, w:100, h:300 }  }
+StaticEntity { platform1, x:110.13895, y:-2338.314, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:937.76904, y:-2731.289, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:-836.5746, y:-2564.5723, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:-1747.5632, y:-3165.9424, Collider { x:30, y:35, w:190, h:40 }  }
 
