@@ -13,8 +13,8 @@ impl World {
             self.entities.load_entities();
         }
 
+        let z_index = 0;
         let mouse = self.main_camera.mouse_world_position();
-
         let lmb = is_mouse_button_pressed(MouseButton::Left);
 
         if let Some(chosen) = self.entities.ui() {
@@ -38,7 +38,11 @@ impl World {
                         * 0.5
                 };
                 entity.pos = mouse - offset;
-                self.static_layers.replace(entity);
+                if entity.sprite.ends_with("spawn") {
+                    self.static_layers.replace(entity);
+                } else {
+                    self.static_layers.add_entity(z_index, entity);
+                }
             }
         }
     }
