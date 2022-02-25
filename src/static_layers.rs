@@ -59,9 +59,11 @@ impl StaticLayers {
         if length < 1.0 {
             let temp_collider = collider.rect().offset(target + start_position);
             if let Some(layer) = self.layer.get(&layer) {
-                for collider in layer {
+                for collider in layer.iter().filter(|collider| !collider.collider.is_none()) {
                     if let Some(collision_rect) = collider
                         .collider
+                        .clone()
+                        .expect("the one without a collider should be filtered out")
                         .rect()
                         .offset(collider.pos)
                         .intersect(temp_collider)
@@ -78,9 +80,11 @@ impl StaticLayers {
                 .offset(step as f32 * direction + start_position);
 
             if let Some(layer) = self.layer.get(&layer) {
-                for collider in layer {
+                for collider in layer.iter().filter(|collider| !collider.collider.is_none()) {
                     if let Some(collision_rect) = collider
                         .collider
+                        .clone()
+                        .expect("the one without a collider should be filtered out")
                         .rect()
                         .offset(collider.pos)
                         .intersect(temp_collider)
@@ -116,32 +120,50 @@ impl Display for StaticLayers {
 #[derive(Clone)]
 pub struct StaticEntity {
     pub pos: Vec2,
-    pub collider: Collider,
+    pub collider: Option<Collider>,
     pub sprite: String,
 }
 
 impl StaticEntity {
     #[must_use]
-    pub const fn new(pos: Vec2, sprite: String, collider: Collider) -> Self {
-        Self {
-            pos,
-            collider,
-            sprite,
+    pub fn new(pos: Vec2, sprite: String, collider: Collider) -> Self {
+        if collider.is_zero() {
+            Self {
+                pos,
+                collider: None,
+                sprite,
+            }
+        } else {
+            Self {
+                pos,
+                collider: Some(collider),
+                sprite,
+            }
         }
     }
 
     pub fn debug(&self, sprites: &Sprites) {
         sprites.draw(&self.sprite, self.pos);
-        self.collider.draw(self.pos);
+        if let Some(collider) = &self.collider {
+            collider.draw(self.pos);
+        }
     }
 }
 
 impl Display for StaticEntity {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "StaticEntity {{ {}, x:{}, y:{}, {} }}",
-            self.sprite, self.pos.x, self.pos.y, self.collider
-        )
+        if let Some(collider) = &self.collider {
+            write!(
+                f,
+                "StaticEntity {{ {}, x:{}, y:{}, {} }}",
+                self.sprite, self.pos.x, self.pos.y, collider
+            )
+        } else {
+            write!(
+                f,
+                "StaticEntity {{ {}, x:{}, y:{} }}",
+                self.sprite, self.pos.x, self.pos.y
+            )
+        }
     }
 }

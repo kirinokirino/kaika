@@ -42,6 +42,10 @@ impl Collider {
             color_u8!(255, 100, 100, 100),
         );
     }
+
+    pub fn is_zero(&self) -> bool {
+        self.width + self.height < 1.0
+    }
 }
 
 impl Display for Collider {

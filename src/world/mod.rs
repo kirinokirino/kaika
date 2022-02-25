@@ -77,7 +77,9 @@ impl World {
         ];
         self.player = Some(Player::new(
             Vec2::new(0.0, 0.0),
-            player_collider.clone(),
+            player_collider
+                .clone()
+                .expect("Player entity should have a collider"),
             &sprites,
         ));
     }

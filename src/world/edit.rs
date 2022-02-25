@@ -20,7 +20,15 @@ impl World {
                 .expect("Tried to get unexisting entity, chosen_entity set incorrectly");
             if lmb {
                 let mut entity = entity.clone();
-                let offset = entity.collider.center();
+                let offset = if let Some(collider) = &entity.collider {
+                    collider.center()
+                } else {
+                    self.sprites
+                        .get_sprite(&entity.sprite)
+                        .expect("Chosen entity should have a sprite")
+                        .size()
+                        * 0.5
+                };
                 entity.pos = mouse - offset;
                 self.static_layers.add_entity(0, entity);
             }
