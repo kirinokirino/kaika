@@ -2,6 +2,7 @@ sprites/platform1.png
 sprites/char1-idle.png
 sprites/char1-jump.png
 sprites/char1-fall.png
+sprites/char1-spawn.png
 sprites/star1.png
 sprites/star2.png
 sprites/star3.png
