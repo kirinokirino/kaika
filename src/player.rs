@@ -1,9 +1,12 @@
+use std::fmt::Display;
+
 use macroquad::math::Vec2;
 
 use crate::collider::Collider;
 use crate::sprite::Sprites;
-use crate::tween::Tween;
+use crate::tween::{Tween, TWEEN_PERIOD};
 
+#[derive(PartialEq, Debug)]
 enum PlayerState {
     Idle,
     Running,
@@ -42,26 +45,42 @@ impl Player {
     }
 
     pub fn jump(&mut self) {
-        if self.jump_tween.value() < f32::EPSILON {
+        if self.jump_tween.stopped {
             self.state = PlayerState::Jumping;
             self.jump_tween.stopped = false;
+        }
+    }
+
+    pub fn jump_stop(&mut self) {
+        if self.state == PlayerState::Jumping {
+            if self.jump_tween.time > JUMP_START_OFFSET as f32 * TWEEN_PERIOD {
+                self.state = PlayerState::Falling;
+                self.jump_tween.set_offset(JUMP_END_OFFSET);
+            }
         }
     }
 
     pub fn left(&mut self) {
         self.speed_tween.stopped = false;
         self.right = false;
-        self.state = PlayerState::Running;
+
+        if self.state != PlayerState::Jumping {
+            self.state = PlayerState::Running;
+        }
     }
 
     pub fn right(&mut self) {
         self.speed_tween.stopped = false;
         self.right = true;
-        self.state = PlayerState::Running;
+
+        if self.state != PlayerState::Jumping {
+            self.state = PlayerState::Running;
+        }
     }
 
     pub fn stop(&mut self) {
-        let some_check = false;
+        // FIXME sholud be collision with the ground
+        let some_check = self.jump_tween.stopped;
         if some_check {
             self.state = PlayerState::Idle;
             self.jump_tween.reset();
@@ -96,8 +115,19 @@ impl Player {
     }
 }
 
+impl Display for Player {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!(
+            "Player {:?}, jump_tween: {}",
+            self.state, self.jump_tween
+        ))
+    }
+}
+
+const JUMP_START_OFFSET: usize = 10;
+const JUMP_END_OFFSET: usize = 54;
 #[allow(clippy::excessive_precision, clippy::unreadable_literal)]
-const JUMP_WAVEFORM: [f32; 90] = [
+const JUMP_WAVEFORM: [f32; 60] = [
     0.0,
     16.833333333333332,
     34.166666666666664,
@@ -108,84 +138,54 @@ const JUMP_WAVEFORM: [f32; 90] = [
     88.5,
     90.83333333333333,
     91.33333333333333,
-    92.33333333333333,
-    92.33333333333333,
     92.5,
-    92.66666666666666,
     93.16666666666666,
     93.5,
     94.0,
-    94.16666666666667,
-    94.66666666666667,
     94.83333333333334,
     95.5,
-    95.66666666666667,
-    95.83333333333334,
-    96.33333333333334,
-    96.5,
-    96.5,
-    97.0,
+    96.0,
     97.33333333333334,
-    98.0,
-    98.0,
     98.0,
     98.33333333333333,
     98.66666666666667,
     99.0,
-    99.0,
-    99.0,
-    99.0,
-    99.0,
-    99.16666666666667,
-    99.33333333333333,
     99.5,
-    99.33333333333333,
-    99.83333333333333,
-    100.0,
-    99.5,
-    100.0,
-    100.0,
-    100.0,
-    100.0,
     100.0,
     99.66666666666667,
     99.16666666666667,
     98.83333333333333,
-    98.33333333333333,
     97.33333333333334,
     97.0,
     96.83333333333334,
+    96.83333333333334,
+    96.33333333333334,
     96.33333333333334,
     96.16666666666667,
+    96.16666666666667,
+    95.5,
     95.5,
     95.0,
+    95.0,
+    94.66666666666667,
     94.66666666666667,
     94.0,
-    93.83333333333333,
+    94.0,
+    93.33333333333333,
     93.33333333333333,
     92.5,
+    92.5,
+    92.16666666666666,
     92.16666666666666,
     91.0,
+    91.0,
+    90.66666666666666,
     90.66666666666666,
     90.0,
-    89.33333333333333,
-    88.83333333333333,
-    87.83333333333333,
-    87.16666666666667,
-    85.83333333333333,
-    84.5,
-    83.33333333333334,
-    81.33333333333333,
-    79.16666666666666,
-    76.0,
-    73.83333333333333,
-    70.66666666666667,
-    67.66666666666666,
-    66.16666666666666,
-    63.0,
-    57.333333333333336,
-    50.5,
-    42.5,
-    24.833333333333332,
+    90.0,
+    80.0,
+    65.0,
+    45.0,
+    25.0,
     0.0,
 ];

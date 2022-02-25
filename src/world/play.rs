@@ -10,8 +10,10 @@ impl World {
         let d = is_key_down(KeyCode::D) || is_key_down(KeyCode::E);
 
         if let Some(player) = &mut self.player {
-            if is_key_pressed(KeyCode::Space) {
+            if is_key_down(KeyCode::Space) {
                 player.jump();
+            } else {
+                player.jump_stop();
             }
             if a {
                 player.left();
@@ -25,8 +27,8 @@ impl World {
 
     pub fn play_update(&mut self, delta: f64) {
         if let Some(player) = &mut self.player {
-            self.main_camera.target = player.pos;
             player.update(delta);
+            self.main_camera.target += (player.pos - self.main_camera.target) * 0.2;
         }
     }
 
@@ -55,5 +57,15 @@ impl World {
         }
 
         set_default_camera();
+
+        if let Some(player) = &self.player {
+            draw_text(
+                &format!("{}", player),
+                10.0,
+                10.0,
+                18.0,
+                color_u8!(255, 255, 255, 255),
+            );
+        }
     }
 }

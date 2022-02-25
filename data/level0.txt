@@ -14,4 +14,13 @@ StaticEntity { star2, x:-502.15433, y:-1525.0603, Collider { x:38, y:43, w:50, h
 StaticEntity { star2, x:-781.23895, y:-1421.9902, Collider { x:38, y:43, w:50, h:50 }  }
 StaticEntity { star3, x:17.82698, y:-1394.8726, Collider { x:38, y:43, w:50, h:50 }  }
 StaticEntity { star3, x:-1458.8998, y:-1649.1091, Collider { x:38, y:43, w:50, h:50 }  }
+StaticEntity { platform1, x:-540.7993, y:58, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:-508.79932, y:292, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:-408.79932, y:460, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:155.20067, y:584, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:815.2007, y:584, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:1069.2007, y:492, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:1171.2007, y:322, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:1257.2007, y:26, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { platform1, x:-430.79932, y:-178, Collider { x:30, y:35, w:190, h:40 }  }
 
