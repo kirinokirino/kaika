@@ -100,9 +100,13 @@ impl Player {
             self.speed_tween.value() * -20.0
         };
         self.pos.x += speed_x * delta as f32;
-        let jump_speed = self.jump_tween.value() * -10.0;
+        let jump_speed = self.jump_tween.value() * -5.0;
 
         self.pos.y = jump_speed;
+
+        if self.jump_tween.time > JUMP_END_OFFSET as f32 * TWEEN_PERIOD {
+            self.state = PlayerState::Falling;
+        }
     }
 
     pub fn draw(&self, sprites: &Sprites) {
