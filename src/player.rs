@@ -7,7 +7,7 @@ use crate::sprite::Sprites;
 use crate::static_layers::StaticLayers;
 use crate::tween::{Tween, TWEEN_PERIOD};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Copy, Clone)]
 enum PlayerState {
     Idle,
     Running,
@@ -125,11 +125,15 @@ impl Player {
     }
 
     pub fn draw(&self, sprites: &Sprites) {
-        match self.state {
-            PlayerState::Idle => sprites.draw(&self.sprites[0], self.pos),
-            PlayerState::Running => sprites.draw(&self.sprites[0], self.pos),
-            PlayerState::Jumping => sprites.draw(&self.sprites[1], self.pos),
-            PlayerState::Falling => sprites.draw(&self.sprites[2], self.pos),
+        match (self.state, self.right) {
+            (PlayerState::Idle, true) => sprites.draw(&self.sprites[0], self.pos),
+            (PlayerState::Idle, false) => sprites.draw_flipped(&self.sprites[0], self.pos),
+            (PlayerState::Running, true) => sprites.draw(&self.sprites[0], self.pos),
+            (PlayerState::Running, false) => sprites.draw_flipped(&self.sprites[0], self.pos),
+            (PlayerState::Jumping, true) => sprites.draw(&self.sprites[1], self.pos),
+            (PlayerState::Jumping, false) => sprites.draw_flipped(&self.sprites[1], self.pos),
+            (PlayerState::Falling, true) => sprites.draw(&self.sprites[2], self.pos),
+            (PlayerState::Falling, false) => sprites.draw_flipped(&self.sprites[2], self.pos),
         }
     }
 }

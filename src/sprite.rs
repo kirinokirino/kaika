@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use macroquad::math::Vec2;
+use macroquad::prelude::{draw_texture_ex, DrawTextureParams};
 use macroquad::texture::{draw_texture, load_texture, Texture2D};
 use macroquad::ui;
 use macroquad::{color::Color, color_u8};
@@ -62,6 +63,14 @@ impl Sprites {
         }
     }
 
+    pub fn draw_flipped(&self, sprite: &str, pos: Vec2) {
+        if let Some(sprite) = self.sprites.get(sprite) {
+            sprite.draw_flipped(pos);
+        } else {
+            eprintln!("ERROR: Tried to draw a non-existing sprite: {}", sprite);
+        }
+    }
+
     pub fn draw_at_center(&self, sprite: &str, pos: Vec2) {
         if let Some(sprite) = self.sprites.get(sprite) {
             let offset = sprite.size() * 0.5;
@@ -111,5 +120,19 @@ impl Sprite {
 
     pub fn draw(&self, pos: Vec2) {
         draw_texture(self.texture, pos.x, pos.y, color_u8!(255, 255, 255, 255));
+    }
+
+    pub fn draw_flipped(&self, pos: Vec2) {
+        let params: DrawTextureParams = DrawTextureParams {
+            flip_x: true,
+            ..DrawTextureParams::default()
+        };
+        draw_texture_ex(
+            self.texture,
+            pos.x,
+            pos.y,
+            color_u8!(255, 255, 255, 255),
+            params,
+        );
     }
 }
