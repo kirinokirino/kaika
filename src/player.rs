@@ -20,7 +20,7 @@ pub struct Player {
     right: bool,
     speed_tween: Tween,
     jump_tween: Tween,
-    collider: Collider,
+    pub collider: Collider,
     pub sprites: Vec<String>,
 }
 
@@ -43,6 +43,8 @@ impl Player {
             sprites,
         }
     }
+
+    fn init(&mut self) {}
 
     pub fn jump(&mut self) {
         if self.jump_tween.stopped {
