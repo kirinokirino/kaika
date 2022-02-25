@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+use crate::common::lerp;
+
 pub const TWEEN_PERIOD: f32 = 1000.0 / 30.0;
 
 #[derive(Debug, Clone)]
@@ -47,9 +49,13 @@ impl Tween {
 
     pub fn value(&mut self) -> f32 {
         if !self.stopped {
-            let step = (self.time / TWEEN_PERIOD).floor() as usize;
+            let period = self.time / TWEEN_PERIOD;
+            let step = period.ceil() as usize;
+            let fraction = period.fract();
             if let Some(value) = self.waveform.get(step) {
-                self.value = *value;
+                let previous_value = self.waveform.get(step - 1).unwrap_or(&0.0);
+                let lerp_value = lerp(*previous_value, *value, fraction);
+                self.value = lerp_value;
             } else {
                 self.value = *self
                     .waveform
