@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::Path;
 
+use macroquad::camera::set_default_camera;
 use macroquad::math::Vec2;
 use macroquad::ui;
 
@@ -78,6 +79,7 @@ impl Entities {
         }
     }
     pub fn ui(&self) -> Option<usize> {
+        set_default_camera();
         let mut selection = None;
         for (i, entity) in self.static_entities.iter().enumerate() {
             if ui::root_ui().button(None, entity.sprite.clone()) {

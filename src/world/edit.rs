@@ -13,7 +13,11 @@ impl World {
 
         let lmb = is_mouse_button_pressed(MouseButton::Left);
 
-        if let Some(entity) = self.chosen_entity {
+        if let Some(chosen) = self.entities.ui() {
+            self.chosen_entity = Some(chosen);
+        } else if ui::root_ui().button(None, "Save the level") {
+            self.save_level();
+        } else if let Some(entity) = self.chosen_entity {
             let entity = self
                 .entities
                 .get(entity)
@@ -32,15 +36,6 @@ impl World {
                 entity.pos = mouse - offset;
                 self.static_layers.add_entity(0, entity);
             }
-        }
-
-        set_default_camera();
-        if let Some(chosen) = self.entities.ui() {
-            self.chosen_entity = Some(chosen);
-        }
-
-        if ui::root_ui().button(None, "Save the level") {
-            self.save_level();
         }
     }
     pub fn edit_update(&mut self) {}
