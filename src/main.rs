@@ -72,7 +72,7 @@ async fn main() {
     world.setup();
 
     loop {
-        clear_background(GRAY);
+        clear_background(color_u8!(35, 47, 54, 255));
 
         world.input();
         world.update();
