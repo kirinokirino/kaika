@@ -3,6 +3,7 @@ use std::fmt::Display;
 use macroquad::math::Vec2;
 
 use crate::collider::Collider;
+use crate::common::Direction;
 use crate::sprite::Sprites;
 use crate::static_layers::StaticLayers;
 use crate::tween::{Tween, TWEEN_PERIOD};
@@ -40,7 +41,7 @@ impl Player {
             pos,
             right: true,
             speed_tween,
-            start_jumping_y: 0.0,
+            start_jumping_y: pos.y,
             jump_tween,
             collider,
             sprites,
@@ -108,15 +109,37 @@ impl Player {
             self.jump_tween.reset();
         }
         let jump_offset = self.jump_tween.value() * -5.0;
+        let jump_offset_is_zero = jump_offset.abs() < f32::EPSILON;
         let speed_offset = speed_x * delta as f32;
+        let speed_offset_is_zero = speed_offset.abs() < f32::EPSILON;
 
-        let end = Vec2::new(
-            self.pos.x + speed_offset,
-            self.start_jumping_y + jump_offset,
-        );
-
-        let collision = static_layers.get_collision_point(&self.collider, self.pos, end, 0);
-        self.pos = collision;
+        if !jump_offset_is_zero || !speed_offset_is_zero {
+            let end = Vec2::new(
+                self.pos.x + speed_offset,
+                self.start_jumping_y + jump_offset,
+            );
+            let (direction, end_point) =
+                static_layers.get_collision_point(&self.collider, self.pos, end, 0);
+            if let Some(direction) = direction {
+                let bounce = end - end_point;
+                match direction {
+                    Direction::Left | Direction::Right => {
+                        self.pos -= bounce;
+                    }
+                    Direction::Bottom => {
+                        self.pos -= bounce;
+                        if bounce.length() > 0.5 {
+                            println!("play sound");
+                        }
+                    }
+                    Direction::Top => {
+                        self.pos = end;
+                    }
+                }
+            } else {
+                self.pos = end_point;
+            }
+        }
 
         // Set sprite to falling after some jumping time.
         if self.jump_tween.time > JUMP_END_OFFSET as f32 * TWEEN_PERIOD {

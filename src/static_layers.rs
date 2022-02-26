@@ -2,8 +2,10 @@ use std::collections::{HashMap, HashSet};
 use std::fmt::{self, Display};
 
 use macroquad::math::Vec2;
+use macroquad::prelude::Rect;
 
 use crate::collider::Collider;
+use crate::common::Direction;
 use crate::sprite::Sprites;
 
 // by z-index, I guess
@@ -52,49 +54,48 @@ impl StaticLayers {
         start_position: Vec2,
         end_position: Vec2,
         layer: i32,
-    ) -> Vec2 {
-        let target = end_position - start_position;
-        let direction = target.normalize();
-        let length = target.length();
-        if length < 1.0 {
-            let temp_collider = collider.rect().offset(target + start_position);
-            if let Some(layer) = self.layer.get(&layer) {
-                for collider in layer.iter().filter(|collider| !collider.collider.is_none()) {
-                    if let Some(collision_rect) = collider
-                        .collider
-                        .clone()
-                        .expect("the one without a collider should be filtered out")
-                        .rect()
-                        .offset(collider.pos)
-                        .intersect(temp_collider)
-                    {
-                        return start_position;
-                    }
-                }
-            }
-            return end_position;
-        }
-        for step in 1..length.floor() as i32 {
-            let temp_collider = collider
-                .rect()
-                .offset(step as f32 * direction + start_position);
+    ) -> (Option<Direction>, Vec2) {
+        if let Some(layer) = self.layer.get(&layer) {
+            let target = end_position - start_position;
+            let direction = target.normalize();
+            debug_assert!(!(direction.x.is_nan() && direction.y.is_nan()));
+            let length = target.length();
 
-            if let Some(layer) = self.layer.get(&layer) {
-                for collider in layer.iter().filter(|collider| !collider.collider.is_none()) {
-                    if let Some(collision_rect) = collider
+            let colliders: Vec<Rect> = layer
+                .iter()
+                .filter(|collider| collider.collider.is_some())
+                .map(|entity| {
+                    entity
                         .collider
                         .clone()
                         .expect("the one without a collider should be filtered out")
                         .rect()
-                        .offset(collider.pos)
-                        .intersect(temp_collider)
-                    {
-                        return step as f32 * direction + start_position;
+                        .offset(entity.pos)
+                })
+                .collect();
+            for step in 0..length.floor() as i32 {
+                let step_offset_x = Vec2::new(step as f32 * direction.x, 0.0) + start_position;
+                let temp_collider_x = collider.rect().offset(step_offset_x);
+                let step_offset_y = Vec2::new(0.0, step as f32 * direction.y) + start_position;
+                let temp_collider_y = collider.rect().offset(step_offset_y);
+                for check_against in &colliders {
+                    if let Some(collision_rect) = check_against.intersect(temp_collider_x) {
+                        if direction.x > 0.0 {
+                            return (Some(Direction::Right), step_offset_x);
+                        } else {
+                            return (Some(Direction::Left), step_offset_x);
+                        }
+                    } else if let Some(collision_rect) = check_against.intersect(temp_collider_y) {
+                        if direction.y > 0.0 {
+                            return (Some(Direction::Bottom), step_offset_y);
+                        } else {
+                            return (Some(Direction::Top), step_offset_y);
+                        }
                     }
                 }
             }
         }
-        end_position
+        (None, end_position)
     }
 
     pub fn replace(&mut self, entity: StaticEntity) {
