@@ -13,7 +13,7 @@ pub fn norm(value: f32, start: f32, stop: f32) -> f32 {
     map(value, start, stop, 0.0, 1.0)
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Direction {
     Left,
     Right,

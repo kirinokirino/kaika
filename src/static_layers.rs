@@ -59,7 +59,6 @@ impl StaticLayers {
             let target = end_position - start_position;
             let direction = target.normalize();
             if direction.x.is_nan() && direction.y.is_nan() {
-                println!("Warn: useless collision check");
                 return None;
             }
             let length = target.length();

@@ -26,6 +26,7 @@ pub struct Player {
     pub collider: Collider,
     pub sprites: Vec<String>,
     skip_collision_entities: Vec<StaticEntity>,
+    pub on_ground: bool,
 }
 
 impl Player {
@@ -47,13 +48,14 @@ impl Player {
             collider,
             sprites,
             skip_collision_entities: Vec::new(),
+            on_ground: false,
         }
     }
 
     fn init(&mut self) {}
 
     pub fn jump(&mut self) {
-        if self.jump_tween.stopped {
+        if self.jump_tween.stopped && self.state != PlayerState::Falling {
             self.state = PlayerState::Jumping;
             self.jump_tween.stopped = false;
             self.start_jumping_y = self.pos.y;
@@ -88,16 +90,29 @@ impl Player {
     }
 
     pub fn stop(&mut self) {
-        // FIXME sholud be collision with the ground
-        let some_check = self.jump_tween.stopped;
-        if some_check {
+        if self.on_ground {
             self.state = PlayerState::Idle;
             self.jump_tween.reset();
         }
         self.speed_tween.reset();
     }
 
+    pub fn on_ground(&self, static_layers: &StaticLayers) -> bool {
+        if let Some(res) = static_layers.get_collision_point(
+            &self.collider,
+            self.pos,
+            self.pos + Vec2::new(0.0, 20.0),
+            0,
+        ) {
+            if res.1 == Direction::Bottom {
+                return true;
+            }
+        }
+        false
+    }
+
     pub fn update(&mut self, static_layers: &StaticLayers, delta: f64) {
+        self.on_ground = self.on_ground(static_layers);
         // X
         self.speed_tween.update(delta);
         let speed_x = if self.right {
@@ -110,7 +125,16 @@ impl Player {
         if self.jump_tween.is_over() {
             self.jump_tween.reset();
         }
-        let jump_offset = self.jump_tween.value() * -5.0;
+        let jump_offset = if self.state == PlayerState::Jumping {
+            self.jump_tween.value() * -5.0
+        } else if self.on_ground {
+            0.0
+        } else {
+            self.start_jumping_y = self.pos.y;
+            self.state = PlayerState::Falling;
+            2500.0 * delta as f32
+        };
+
         let jump_offset_is_zero = jump_offset.abs() < f32::EPSILON;
         let speed_offset = speed_x * delta as f32;
         let speed_offset_is_zero = speed_offset.abs() < f32::EPSILON;
@@ -133,10 +157,8 @@ impl Player {
                             self.pos -= bounce;
                         }
                         Direction::Bottom => {
-                            self.jump_tween.reset();
                             self.start_jumping_y = self.pos.y;
                             self.pos -= bounce;
-
                             if bounce.length() > 0.5 {
                                 println!("play sound");
                             }
@@ -151,6 +173,10 @@ impl Player {
                 self.pos = end;
                 self.skip_collision_entities.clear();
             }
+        }
+
+        if jump_offset_is_zero && self.state == PlayerState::Jumping {
+            println!("ttht");
         }
 
         // Set sprite to falling after some jumping time.
@@ -186,7 +212,7 @@ const JUMP_START_OFFSET: usize = 10;
 const JUMP_END_OFFSET: usize = 54;
 #[allow(clippy::excessive_precision, clippy::unreadable_literal)]
 const JUMP_WAVEFORM: [f32; 60] = [
-    0.0,
+    1.0,
     16.833333333333332,
     34.166666666666664,
     51.16666666666667,
