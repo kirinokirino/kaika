@@ -3,7 +3,7 @@ use std::fmt::{self, Display};
 
 use macroquad::prelude::*;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct Collider {
     pub pos: Vec2,
     width: f32,

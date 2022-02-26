@@ -54,23 +54,29 @@ impl StaticLayers {
         start_position: Vec2,
         end_position: Vec2,
         layer: i32,
-    ) -> (Option<Direction>, Vec2) {
+    ) -> Option<(&StaticEntity, Direction, Vec2)> {
         if let Some(layer) = self.layer.get(&layer) {
             let target = end_position - start_position;
             let direction = target.normalize();
-            debug_assert!(!(direction.x.is_nan() && direction.y.is_nan()));
+            if direction.x.is_nan() && direction.y.is_nan() {
+                println!("Warn: useless collision check");
+                return None;
+            }
             let length = target.length();
 
-            let colliders: Vec<Rect> = layer
+            let colliders: Vec<(Rect, &StaticEntity)> = layer
                 .iter()
                 .filter(|collider| collider.collider.is_some())
                 .map(|entity| {
-                    entity
-                        .collider
-                        .clone()
-                        .expect("the one without a collider should be filtered out")
-                        .rect()
-                        .offset(entity.pos)
+                    (
+                        entity
+                            .collider
+                            .clone()
+                            .expect("the one without a collider should be filtered out")
+                            .rect()
+                            .offset(entity.pos),
+                        entity,
+                    )
                 })
                 .collect();
             for step in 0..length.floor() as i32 {
@@ -78,24 +84,24 @@ impl StaticLayers {
                 let temp_collider_x = collider.rect().offset(step_offset_x);
                 let step_offset_y = Vec2::new(0.0, step as f32 * direction.y) + start_position;
                 let temp_collider_y = collider.rect().offset(step_offset_y);
-                for check_against in &colliders {
+                for (check_against, entity) in &colliders {
                     if let Some(collision_rect) = check_against.intersect(temp_collider_x) {
                         if direction.x > 0.0 {
-                            return (Some(Direction::Right), step_offset_x);
+                            return Some((entity, Direction::Right, step_offset_x));
                         } else {
-                            return (Some(Direction::Left), step_offset_x);
+                            return Some((entity, Direction::Left, step_offset_x));
                         }
                     } else if let Some(collision_rect) = check_against.intersect(temp_collider_y) {
                         if direction.y > 0.0 {
-                            return (Some(Direction::Bottom), step_offset_y);
+                            return Some((entity, Direction::Bottom, step_offset_y));
                         } else {
-                            return (Some(Direction::Top), step_offset_y);
+                            return Some((entity, Direction::Top, step_offset_y));
                         }
                     }
                 }
             }
         }
-        (None, end_position)
+        None
     }
 
     pub fn replace(&mut self, entity: StaticEntity) {
@@ -155,7 +161,7 @@ impl Display for StaticLayers {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct StaticEntity {
     pub pos: Vec2,
     pub collider: Option<Collider>,

@@ -21,4 +21,11 @@ StaticEntity { platform1, x:-2218.0176, y:-1032.3789, Collider { x:30, y:35, w:1
 StaticEntity { platform1, x:-396.75873, y:-951.32666, Collider { x:30, y:35, w:190, h:40 }  }
 StaticEntity { platform1, x:1677.1881, y:-336.2941, Collider { x:30, y:35, w:190, h:40 }  }
 StaticEntity { platform1, x:1805.9159, y:-1857.1897, Collider { x:30, y:35, w:190, h:40 }  }
+StaticEntity { moon0, x:982.73755, y:-3935.3623 }
+StaticEntity { stars1, x:-281.58228, y:-3723.8625 }
+StaticEntity { stars1, x:-2346.7207, y:-1812.6133 }
+StaticEntity { stars1, x:775.8092, y:-1539.5779 }
+StaticEntity { cloud7, x:668.2732, y:-3565.4705 }
+StaticEntity { cloud1, x:-1185.9316, y:-4555.817 }
+StaticEntity { cloud6, x:1512.652, y:-5443.9595 }
 

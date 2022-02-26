@@ -5,7 +5,7 @@ use macroquad::math::Vec2;
 use crate::collider::Collider;
 use crate::common::Direction;
 use crate::sprite::Sprites;
-use crate::static_layers::StaticLayers;
+use crate::static_layers::{StaticEntity, StaticLayers};
 use crate::tween::{Tween, TWEEN_PERIOD};
 
 #[derive(PartialEq, Debug, Copy, Clone)]
@@ -25,6 +25,7 @@ pub struct Player {
     jump_tween: Tween,
     pub collider: Collider,
     pub sprites: Vec<String>,
+    skip_collision_entities: Vec<StaticEntity>,
 }
 
 impl Player {
@@ -45,6 +46,7 @@ impl Player {
             jump_tween,
             collider,
             sprites,
+            skip_collision_entities: Vec::new(),
         }
     }
 
@@ -118,26 +120,36 @@ impl Player {
                 self.pos.x + speed_offset,
                 self.start_jumping_y + jump_offset,
             );
-            let (direction, end_point) =
-                static_layers.get_collision_point(&self.collider, self.pos, end, 0);
-            if let Some(direction) = direction {
-                let bounce = end - end_point;
-                match direction {
-                    Direction::Left | Direction::Right => {
-                        self.pos -= bounce;
-                    }
-                    Direction::Bottom => {
-                        self.pos -= bounce;
-                        if bounce.length() > 0.5 {
-                            println!("play sound");
+            if let Some((entity, direction, end_point)) =
+                static_layers.get_collision_point(&self.collider, self.pos, end, 0)
+            {
+                if self.skip_collision_entities.contains(entity) {
+                    self.pos = end;
+                } else {
+                    let bounce = end - end_point;
+                    match direction {
+                        Direction::Left | Direction::Right => {
+                            self.right = !self.right;
+                            self.pos -= bounce;
                         }
-                    }
-                    Direction::Top => {
-                        self.pos = end;
+                        Direction::Bottom => {
+                            self.jump_tween.reset();
+                            self.start_jumping_y = self.pos.y;
+                            self.pos -= bounce;
+
+                            if bounce.length() > 0.5 {
+                                println!("play sound");
+                            }
+                        }
+                        Direction::Top => {
+                            self.skip_collision_entities.push(entity.clone());
+                            self.pos = end;
+                        }
                     }
                 }
             } else {
-                self.pos = end_point;
+                self.pos = end;
+                self.skip_collision_entities.clear();
             }
         }
 
